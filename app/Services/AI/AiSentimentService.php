@@ -3,7 +3,9 @@
 namespace App\Services\AI;
 
 use App\Models\VibeEntry;
+use App\Services\KolosalAIService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * AI Sentiment Analysis Service
@@ -22,15 +24,11 @@ use Illuminate\Support\Collection;
  */
 class AiSentimentService
 {
-    protected string $apiKey;
-    protected string $apiUrl;
-    protected string $model;
+    protected KolosalAIService $kolosalAI;
 
-    public function __construct()
+    public function __construct(KolosalAIService $kolosalAIService)
     {
-        $this->apiKey = config('services.ai.api_key', '');
-        $this->apiUrl = config('services.ai.api_url', 'https://api.openai.com/v1');
-        $this->model = config('services.ai.model', 'gpt-3.5-turbo');
+        $this->kolosalAI = $kolosalAIService;
     }
 
     /**
@@ -40,21 +38,32 @@ class AiSentimentService
      */
     public function isConfigured(): bool
     {
-        return !empty($this->apiKey);
+        // Check if AI is enabled and API key is configured
+        return config('services.ai.enabled', false) && !empty(config('services.ai.api_key'));
     }
 
     /**
      * Analyze sentiment dari text
      * 
      * @param string $text Text yang akan dianalisis
-     * @return array Array dengan keys: score, label, emotions, summary
+     * @return array Array dengan keys: sentiment, score, analysis, suggested_response, emotions, summary
      */
     public function analyzeSentiment(string $text): array
     {
         $prompt = $this->buildSentimentPrompt($text);
         $response = $this->callAiApi($prompt);
 
-        return $this->parseSentimentResponse($response);
+        $parsed = $this->parseSentimentResponse($response);
+        
+        // Return format yang sesuai dengan Empathy Radar controller
+        return [
+            'sentiment' => $parsed['label'] ?? 'neutral', // Map label -> sentiment
+            'score' => $parsed['score'] ?? 0.5,
+            'analysis' => $parsed['summary'] ?? '',
+            'suggested_response' => $this->generateSuggestedResponse($parsed['label'] ?? 'neutral', $text),
+            'emotions' => $parsed['emotions'] ?? [],
+            'summary' => $parsed['summary'] ?? '',
+        ];
     }
 
     /**
@@ -195,16 +204,29 @@ class AiSentimentService
 
     /**
      * Call AI API
-     * 
-     * TODO: Implement actual API call
      */
     protected function callAiApi(string $prompt): string
     {
-        // ============================================================
-        // TODO: IMPLEMENT AI API CALL HERE
-        // ============================================================
+        try {
+            $result = $this->kolosalAI->chat($prompt);
+            
+            if ($result && $result['success']) {
+                return $result['content'];
+            }
+            
+            Log::warning('KolosalAI sentiment analysis failed, using fallback');
+            return $this->getFallbackResponse($prompt);
+        } catch (\Exception $e) {
+            Log::error('AI Sentiment error: ' . $e->getMessage());
+            return $this->getFallbackResponse($prompt);
+        }
+    }
 
-        // Mock response untuk development
+    /**
+     * Get fallback response when AI fails
+     */
+    protected function getFallbackResponse(string $prompt): string
+    {
         $text = strtolower($prompt);
 
         // Simple keyword-based mock
@@ -271,7 +293,7 @@ class AiSentimentService
     }
 
     /**
-     * Get emoji for mood score
+     * Get mood emoji for mood score
      */
     protected function getMoodEmoji(float $score): string
     {
@@ -281,6 +303,18 @@ class AiSentimentService
             $score > -0.2 => '😐',
             $score > -0.5 => '😔',
             default => '😢',
+        };
+    }
+
+    /**
+     * Generate suggested response for staff based on sentiment
+     */
+    protected function generateSuggestedResponse(string $sentiment, string $customerMessage): string
+    {
+        return match ($sentiment) {
+            'positive' => 'Terima kasih atas feedback positifnya! Kami senang Anda menikmati pengalaman di MoodBrew.',
+            'negative' => 'Mohon maaf atas ketidaknyamanannya. Kami akan segera menindaklanjuti masalah ini.',
+            default => 'Terima kasih atas feedback Anda. Kami menghargai masukan Anda untuk meningkatkan layanan.',
         };
     }
 }

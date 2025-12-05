@@ -127,7 +127,7 @@ class OrderService
             foreach ($items as $item) {
                 $menuItem = MenuItem::find($item['menu_item_id']);
                 if ($menuItem) {
-                    $totalAmount += $menuItem->price * $item['quantity'];
+                    $totalAmount += $menuItem->getCurrentPrice() * $item['quantity'];
                 }
             }
 
@@ -158,7 +158,7 @@ class OrderService
                         'order_id' => $order->id,
                         'menu_item_id' => $menuItem->id,
                         'quantity' => $item['quantity'],
-                        'price' => $menuItem->price,
+                        'price_at_moment' => $menuItem->getCurrentPrice(),
                         'note' => $item['note'] ?? null,
                     ]);
 
@@ -176,15 +176,20 @@ class OrderService
      *
      * @param int $orderId
      * @param string $paymentMethod cash, qris, debit, credit
+     * @param float $amountPaid
      * @return Order
      */
-    public function processPayment(int $orderId, string $paymentMethod): Order
+    public function processPayment(int $orderId, string $paymentMethod, float $amountPaid = 0): Order
     {
         $order = Order::findOrFail($orderId);
 
+        $changeAmount = $amountPaid > 0 ? $amountPaid - $order->total_amount : 0;
+
         $order->update([
-            'status' => 'preparing',
+            'status' => Order::STATUS_PREPARING,
             'payment_method' => $paymentMethod,
+            'amount_paid' => $amountPaid,
+            'change_amount' => max(0, $changeAmount),
             'paid_at' => now(),
         ]);
 

@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(LandingController::class)->group(function () {
     Route::get('/', 'home')->name('landing.home');
     Route::get('/menu', 'menu')->name('landing.menu');
-    Route::get('/about', 'about')->name('landing.about');
+    Route::get('/vibewall', 'vibewall')->name('landing.vibewall');
 });
 
 /*
@@ -43,17 +43,13 @@ Route::controller(LandingController::class)->group(function () {
 */
 
 Route::middleware('guest')->group(function () {
-    // Staff Login (Admin/Cashier)
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    // Customer Quick Access (Main Login - tanpa password)
+    Route::get('/login', [AuthController::class, 'showCustomerAccess'])->name('login');
+    Route::post('/login', [AuthController::class, 'customerAccess'])->name('customer.access');
 
-    // Customer Registration (optional, dengan password)
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
-
-    // Customer Quick Access (tanpa password)
-    Route::get('/start', [AuthController::class, 'showCustomerAccess'])->name('customer.access.form');
-    Route::post('/start', [AuthController::class, 'customerAccess'])->name('customer.access');
+    // Staff Login (Admin/Cashier) - Secondary
+    Route::get('/staff/login', [AuthController::class, 'showLogin'])->name('staff.login');
+    Route::post('/staff/login', [AuthController::class, 'login']);
 });
 
 // Logout (untuk semua authenticated users)
@@ -213,11 +209,8 @@ Route::prefix('order')
             Route::post('/', [CustomerVibeWallController::class, 'store'])->name('store');
         });
 
-        // AI Routes (Mood Recommendation & Chat)
-        Route::prefix('ai')->name('ai.')->group(function () {
-            Route::post('/recommend', [CustomerAiController::class, 'recommend'])->name('recommend');
-            Route::post('/chat', [CustomerAiController::class, 'chat'])->name('chat');
-            Route::get('/quick-replies', [CustomerAiController::class, 'quickReplies'])->name('quick-replies');
-            Route::get('/history', [CustomerAiController::class, 'history'])->name('history');
-        });
+        // AI Demo Page (untuk testing integrasi AI)
+        Route::get('/ai-demo', function () {
+            return view('customer.ai-demo');
+        })->name('ai.demo');
     });

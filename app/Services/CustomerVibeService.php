@@ -57,9 +57,12 @@ class CustomerVibeService
 
             // If AI is configured, analyze sentiment
             if ($this->sentimentService->isConfigured()) {
-                $analysis = $this->sentimentService->analyze($data['message']);
-                if ($analysis['success']) {
+                try {
+                    $analysis = $this->sentimentService->analyzeSentiment($data['message']);
                     $sentimentScore = $analysis['score'] ?? 0.5;
+                } catch (\Exception $e) {
+                    // AI failed, use default
+                    $sentimentScore = 0.5;
                 }
             }
 

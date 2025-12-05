@@ -213,6 +213,26 @@ class MenuItem extends Model
     }
 
     /**
+     * Get current price (dengan flash sale jika ada)
+     * 
+     * @return float
+     */
+    public function getCurrentPrice(): float
+    {
+        $activeFlashSale = \App\Models\FlashSale::where('is_active', true)
+            ->where('starts_at', '<=', now())
+            ->where('ends_at', '>=', now())
+            ->first();
+
+        if ($activeFlashSale) {
+            $discount = $this->price * ($activeFlashSale->discount_percentage / 100);
+            return $this->price - $discount;
+        }
+
+        return (float) $this->price;
+    }
+
+    /**
      * Kurangi stock saat order
      */
     public function decrementStock(int $quantity = 1): bool

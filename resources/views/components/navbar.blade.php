@@ -21,26 +21,26 @@
                     class="text-brew-brown hover:text-brew-gold transition-colors font-medium">
                     Home
                 </a>
-                <a href="#features" class="text-gray-600 hover:text-brew-gold transition-colors">
-                    Fitur
-                </a>
-                <a href="#menu" class="text-gray-600 hover:text-brew-gold transition-colors">
+                <a href="{{ route('landing.menu') }}" class="text-gray-600 hover:text-brew-gold transition-colors">
                     Menu
                 </a>
-                <a href="#about" class="text-gray-600 hover:text-brew-gold transition-colors">
-                    Tentang
+                <a href="{{ route('landing.vibewall') }}" class="text-gray-600 hover:text-brew-gold transition-colors">
+                    Vibe Wall
+                </a>
+                <a href="#features" class="text-gray-600 hover:text-brew-gold transition-colors">
+                    Fitur
                 </a>
             </div>
 
             {{-- Auth Buttons (Desktop) --}}
             <div class="hidden md:flex items-center space-x-4">
-                <a href="{{ route('login') }}"
-                    class="text-brew-brown hover:text-brew-gold transition-colors font-medium">
-                    Masuk
+                <a href="{{ route('staff.login') }}"
+                    class="text-gray-500 hover:text-brew-gold transition-colors text-sm">
+                    Staff
                 </a>
-                <a href="{{ route('register') }}"
-                    class="bg-brew-brown text-white px-5 py-2 rounded-full hover:bg-brew-dark transition-colors font-medium">
-                    Daftar
+                <a href="{{ route('login') }}"
+                    class="bg-brew-brown text-white px-6 py-2.5 rounded-full hover:bg-brew-dark transition-colors font-medium shadow-md">
+                    Mulai Pesan
                 </a>
             </div>
 
@@ -74,24 +74,24 @@
                 class="block px-3 py-2 text-brew-brown font-medium rounded-lg hover:bg-brew-cream transition-colors">
                 Home
             </a>
+            <a href="{{ route('landing.menu') }}" class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-brew-cream transition-colors">
+                Menu
+            </a>
+            <a href="{{ route('landing.vibewall') }}" class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-brew-cream transition-colors">
+                Vibe Wall
+            </a>
             <a href="#features" class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-brew-cream transition-colors">
                 Fitur
             </a>
-            <a href="#menu" class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-brew-cream transition-colors">
-                Menu
-            </a>
-            <a href="#about" class="block px-3 py-2 text-gray-600 rounded-lg hover:bg-brew-cream transition-colors">
-                Tentang
-            </a>
 
             <div class="pt-3 border-t border-gray-100 space-y-2">
-                <a href="{{ route('login') }}"
-                    class="block px-3 py-2 text-center text-brew-brown font-medium rounded-lg hover:bg-brew-cream transition-colors">
-                    Masuk
+                <a href="{{ route('staff.login') }}"
+                    class="block px-3 py-2 text-center text-gray-500 text-sm rounded-lg hover:bg-brew-cream transition-colors">
+                    Staff Login
                 </a>
-                <a href="{{ route('register') }}"
+                <a href="{{ route('login') }}"
                     class="block px-3 py-2 text-center bg-brew-brown text-white font-medium rounded-full hover:bg-brew-dark transition-colors">
-                    Daftar
+                    Mulai Pesan
                 </a>
             </div>
         </div>

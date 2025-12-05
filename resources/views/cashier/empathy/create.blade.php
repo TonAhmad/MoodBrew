@@ -19,26 +19,6 @@
         </a>
     </div>
 
-    <!-- AI Status Banner -->
-    @if(!$isAiAvailable)
-    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
-        <div class="flex items-start gap-3">
-            <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
-            </div>
-            <div>
-                <h3 class="font-semibold text-amber-800">🔧 AI Sentiment Analysis Tidak Tersedia</h3>
-                <p class="text-sm text-amber-700 mt-1">
-                    Sentimen akan diklasifikasi otomatis berdasarkan tipe interaksi yang dipilih.
-                    Fitur AI akan segera hadir untuk analisis yang lebih akurat.
-                </p>
-            </div>
-        </div>
-    </div>
-    @endif
-
     <!-- Flash Messages -->
     @if(session('error'))
     <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
@@ -193,7 +173,30 @@
                 </div>
             </div>
 
-            <!-- AI Feature Preview -->
+            <!-- AI Feature Status -->
+            @if($isAiAvailable)
+            <div class="bg-purple-50 rounded-xl p-4 border-2 border-purple-200">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                    <h4 class="font-medium text-purple-800 mb-1">✨ AI Sentiment Analysis Active</h4>
+                    <p class="text-xs text-purple-700 mb-2">
+                        AI akan otomatis menganalisis sentimen customer & memberikan saran respons
+                    </p>
+                    <div class="space-y-1 text-xs text-purple-600">
+                        <p>✓ Auto sentiment detection</p>
+                        <p>✓ Emotion analysis</p>
+                        <p>✓ Suggested responses</p>
+                    </div>
+                    <span class="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full mt-3">
+                        ✓ Ready
+                    </span>
+                </div>
+            </div>
+            @else
             <div class="bg-gray-100 rounded-xl p-4 border-2 border-dashed border-gray-300">
                 <div class="text-center">
                     <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -203,13 +206,14 @@
                     </div>
                     <h4 class="font-medium text-gray-600 mb-1">AI Sentiment Analysis</h4>
                     <p class="text-xs text-gray-500 mb-3">
-                        Coming soon! AI akan menganalisis sentimen secara otomatis & memberikan saran respons
+                        Sentimen akan diklasifikasi berdasarkan tipe interaksi. Configure AI_API_KEY untuk analisis otomatis.
                     </p>
                     <span class="inline-flex items-center px-3 py-1 bg-gray-200 text-gray-600 text-xs rounded-full">
-                        🔧 Under Development
+                        ⚙️ Not Configured
                     </span>
                 </div>
             </div>
+            @endif
 
             <!-- Tips -->
             <div class="bg-blue-50 rounded-xl border border-blue-200 p-4">

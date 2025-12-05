@@ -106,40 +106,6 @@ class AuthService
     }
 
     /**
-     * Register customer baru (optional, jika mau simpan data)
-     * 
-     * @param string $name
-     * @param string $email
-     * @param string|null $password
-     * @return array{success: bool, message: string, user?: User}
-     */
-    public function registerCustomer(string $name, string $email, ?string $password = null): array
-    {
-        // Check email sudah ada
-        if (User::where('email', $email)->exists()) {
-            return [
-                'success' => false,
-                'message' => 'Email sudah terdaftar.',
-            ];
-        }
-
-        $user = User::create([
-            'name' => $name,
-            'email' => $email,
-            'password' => $password ? Hash::make($password) : Hash::make(uniqid()), // Random password jika tidak diisi
-            'role' => User::ROLE_CUSTOMER,
-        ]);
-
-        Auth::login($user);
-
-        return [
-            'success' => true,
-            'message' => 'Akun berhasil dibuat!',
-            'user' => $user,
-        ];
-    }
-
-    /**
      * Logout user
      * 
      * @return void

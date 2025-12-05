@@ -1,52 +1,280 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ☕ MoodBrew - Coffee That Understands You
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**MoodBrew** adalah sistem cafe management berbasis AI yang memberikan pengalaman personal kepada pelanggan melalui deteksi mood dan rekomendasi minuman yang tepat. Dikembangkan untuk [Nama Hackathon] dengan fokus pada innovation dan user experience.
 
-## About Laravel
+![MoodBrew Banner](https://via.placeholder.com/1200x400/8B4513/FFFFFF?text=MoodBrew+-+AI+Powered+Coffee+Experience)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🎯 Problem & Solution
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Problem
+- Pelanggan sering kesulitan memilih menu yang sesuai dengan mood mereka
+- Cafe kehilangan kesempatan untuk memberikan layanan yang lebih personal
+- Customer service tidak bisa mengetahui kondisi emosional pelanggan secara real-time
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Solution
+MoodBrew menggunakan **AI (Kolosal AI)** untuk:
+1. **Mood Detection** - Menganalisis text input pelanggan untuk mendeteksi mood (8 kategori: Happy, Relaxed, Energetic, Tired, Stressed, Loved, Thoughtful, Coffee Time)
+2. **Smart Recommendation** - Memberikan rekomendasi menu berdasarkan mood dan flavor profile
+3. **Empathy Radar** - Dashboard untuk cashier/barista melihat mood summary pelanggan
+4. **Silent Social Wall** - Platform untuk pelanggan berbagi vibe secara anonim dengan sentiment analysis
+5. **AI Flash Sale** - Generate copywriting promo secara otomatis
 
-## Learning Laravel
+## ✨ Key Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 🤖 AI-Powered Features
+- **Mood-Based Recommendation** - AI menganalisis mood dan merekomendasikan menu yang cocok
+- **Sentiment Analysis** - Klasifikasi otomatis vibe/mood pelanggan menjadi 8 kategori spesifik
+- **AI Copywriting** - Generate flash sale copy secara otomatis dengan prompting yang teroptimasi
+- **Empathy Radar** - Real-time mood dashboard untuk staff
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 📱 Customer Features
+- **Quick Access Login** - Masuk tanpa password (hanya nama + email)
+- **AI Chat Interface** - Ngobrol dengan AI untuk mendapat rekomendasi
+- **Public Menu & Vibe Wall** - Lihat menu dan vibe wall tanpa login
+- **Cart & Checkout** - Keranjang belanja dengan flash sale integration
+- **Table-Based Ordering** - Scan QR code di meja untuk langsung order
 
-## Laravel Sponsors
+### 💼 Staff Features (Admin & Cashier)
+- **Empathy Radar Dashboard** - Lihat mood pelanggan sebelum deliver order
+- **Flash Sale Management** - Buat flash sale dengan AI-generated copy
+- **Order Management** - Track status: pending → preparing → completed
+- **Vibe Wall Moderation** - Approve/reject vibe entries
+- **Sales Reports** - Daily/Monthly analytics
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🏗️ Tech Stack
 
-### Premium Partners
+### Backend
+- **Laravel 12** - Clean architecture dengan service layer pattern
+- **PHP 8.2+** - Modern PHP with type hints
+- **MySQL** - Relational database
+- **Kolosal AI** - AI/ML integration untuk recommendation & sentiment analysis
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Frontend
+- **Alpine.js** - Reactive components tanpa build step
+- **Tailwind CSS** - Utility-first styling
+- **Blade Templates** - Server-side rendering
 
-## Contributing
+### Architecture
+```
+app/
+├── Http/
+│   ├── Controllers/        # Thin controllers (hanya routing)
+│   │   ├── Admin/
+│   │   ├── Cashier/
+│   │   ├── Customer/
+│   │   └── LandingController.php
+│   └── Requests/          # Form validation
+├── Services/              # Business logic layer
+│   ├── AI/               # AI services (Recommendation, Sentiment, Chat, Copywriting)
+│   ├── AuthService.php
+│   ├── OrderService.php
+│   └── ...
+└── Models/               # Eloquent models
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🚀 Installation
 
-## Code of Conduct
+### Prerequisites
+- PHP >= 8.2
+- Composer
+- MySQL/MariaDB
+- Node.js & NPM (untuk assets compilation)
+
+### Step-by-Step
+
+1. **Clone Repository**
+```bash
+git clone https://github.com/[your-username]/moodbrew.git
+cd moodbrew
+```
+
+2. **Install Dependencies**
+```bash
+composer install
+npm install
+```
+
+3. **Environment Setup**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. **Configure Database** (edit `.env`)
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=moodbrew
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+5. **Configure AI Service** (edit `.env`)
+```env
+KOLOSAL_API_KEY=your_kolosal_api_key_here
+KOLOSAL_API_URL=https://api.kolosal.com
+```
+
+6. **Run Migrations & Seeders**
+```bash
+php artisan migrate --seed
+```
+
+7. **Build Assets**
+```bash
+npm run build
+# atau untuk development:
+npm run dev
+```
+
+8. **Start Development Server**
+```bash
+php artisan serve
+```
+
+9. **Access Application**
+- Landing Page: http://127.0.0.1:8000
+- Customer Login: http://127.0.0.1:8000/login
+- Staff Login: http://127.0.0.1:8000/staff/login
+
+### Default Credentials
+
+**Admin:**
+- Email: `admin@moodbrew.com`
+- Password: `password`
+
+**Cashier:**
+- Email: `cashier@moodbrew.com`
+- Password: `password`
+
+## 📸 Screenshots
+
+### Landing Page
+![Landing Page](https://via.placeholder.com/800x450/8B4513/FFFFFF?text=Landing+Page)
+
+### AI Chat Interface (Customer)
+![AI Chat](https://via.placeholder.com/800x450/8B4513/FFFFFF?text=AI+Chat+Interface)
+
+### Empathy Radar Dashboard (Cashier)
+![Empathy Radar](https://via.placeholder.com/800x450/8B4513/FFFFFF?text=Empathy+Radar)
+
+### Silent Social Wall
+![Vibe Wall](https://via.placeholder.com/800x450/8B4513/FFFFFF?text=Silent+Social+Wall)
+
+## 🎮 Usage Guide
+
+### For Customers
+
+1. **Quick Start**
+   - Kunjungi homepage
+   - Klik "Mulai Pesan"
+   - Isi nama & email (tanpa password!)
+
+2. **Get Recommendation**
+   - Chat dengan AI: "Lagi stress nih, rekomendasiin dong"
+   - AI akan menganalisis mood dan memberikan rekomendasi
+
+3. **Order & Checkout**
+   - Tambahkan item ke cart
+   - Checkout dan pilih nomor meja
+   - Bayar di kasir saat pesanan siap
+
+4. **Share Your Vibe**
+   - Kunjungi Vibe Wall
+   - Tulis mood/vibe kamu hari ini
+   - Pilih anonymous atau tampilkan nama
+   - AI akan mengklasifikasikan mood kamu
+
+### For Staff
+
+1. **Login**
+   - Akses `/staff/login`
+   - Login dengan email & password
+
+2. **Admin - Manage Flash Sale**
+   - Buat flash sale baru
+   - Pilih menu & discount
+   - Klik "Generate AI Copy" untuk copywriting otomatis
+
+3. **Cashier - Process Orders**
+   - View pending orders
+   - Check Empathy Radar untuk mood pelanggan
+   - Update status: preparing → completed
+   - Pilih payment method: Cash/QRIS/Debit
+
+## 🏆 Innovation Highlights
+
+1. **8-Category Mood Classification** - Bukan sekadar positive/neutral/negative, tapi spesifik ke 8 mood dengan emoji matching
+2. **Context-Aware Recommendation** - AI mempertimbangkan flavor profile menu dengan mood pelanggan
+3. **Empathy-Driven Service** - Staff bisa deliver service yang lebih personal dengan melihat mood summary
+4. **No-Password Customer Access** - Frictionless UX untuk pelanggan (sesuai rules hackathon)
+5. **AI Copywriting Integration** - Generate promo copy otomatis, bukan CRUD biasa
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+php artisan test
+
+# Run specific test
+php artisan test --filter=OrderServiceTest
+```
+
+## 📁 Project Structure
+
+```
+moodbrew/
+├── app/
+│   ├── Http/Controllers/   # Thin controllers
+│   ├── Services/          # Business logic
+│   ├── Models/            # Eloquent models
+│   └── ...
+├── resources/
+│   ├── views/             # Blade templates
+│   │   ├── landing/
+│   │   ├── customer/
+│   │   ├── cashier/
+│   │   └── admin/
+│   └── css/
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── routes/
+│   └── web.php           # All routes (structured by role)
+└── README.md
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Team
+
+- **[Your Name]** - Full Stack Developer
+- **Kolosal AI** - AI/ML Integration Partner
+
+## 🙏 Acknowledgments
+
+- Laravel Framework
+- Kolosal AI API
+- Tailwind CSS
+- Alpine.js
+- [Hackathon Name] Committee
+
+---
+
+**Built with ❤️ and ☕ for [Hackathon Name]**
+
 
 In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 

@@ -65,41 +65,51 @@ class CartService
      */
     public function addToCart(int $menuItemId, int $quantity = 1, string $note = ''): array
     {
-        $menu = MenuItem::find($menuItemId);
-        
-        if (!$menu || !$menu->is_available) {
-            return ['success' => false, 'message' => 'Menu tidak tersedia'];
-        }
+        try {
+            $menu = MenuItem::find($menuItemId);
 
-        if ($menu->stock_quantity < $quantity) {
-            return ['success' => false, 'message' => 'Stok tidak mencukupi'];
-        }
-
-        $cart = session('cart', []);
-        
-        if (isset($cart[$menuItemId])) {
-            $cart[$menuItemId]['quantity'] += $quantity;
-            if ($note) {
-                $cart[$menuItemId]['note'] = $note;
+            if (!$menu || !$menu->is_available) {
+                return ['success' => false, 'message' => 'Menu tidak tersedia'];
             }
-        } else {
-            $cart[$menuItemId] = [
-                'quantity' => $quantity,
-                'note' => $note,
-                'price' => $this->getCurrentPrice($menu),
+
+            if ($menu->stock_quantity < $quantity) {
+                return ['success' => false, 'message' => 'Stok tidak mencukupi'];
+            }
+
+            $cart = session('cart', []);
+            
+            if (isset($cart[$menuItemId])) {
+                $cart[$menuItemId]['quantity'] += $quantity;
+                if ($note) {
+                    $cart[$menuItemId]['note'] = $note;
+                }
+            } else {
+                $cart[$menuItemId] = [
+                    'quantity' => $quantity,
+                    'note' => $note,
+                    'price' => $this->getCurrentPrice($menu),
+                ];
+            }
+
+            session(['cart' => $cart]);
+
+            return [
+                'success' => true,
+                'message' => "{$menu->name} ditambahkan ke keranjang",
+                'cart_count' => $this->getCartCount(),
+            ];
+        } catch (\Exception $e) {
+            \Log::error('CartService addToCart error: ' . $e->getMessage(), [
+                'menu_item_id' => $menuItemId,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return [
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menambahkan ke keranjang'
             ];
         }
-
-        session(['cart' => $cart]);
-
-        return [
-            'success' => true,
-            'message' => "{$menu->name} ditambahkan ke keranjang",
-            'cart_count' => $this->getCartCount(),
-        ];
-    }
-
-    /**
+    }    /**
      * Update cart item quantity
      */
     public function updateQuantity(int $menuItemId, int $quantity): array
@@ -196,7 +206,7 @@ class CartService
                 'table_number' => $orderData['table_number'] ?? session('table_number'),
                 'customer_name' => $orderData['customer_name'] ?? session('customer_name', 'Guest'),
                 'total_amount' => $this->getCartTotal(),
-                'status' => Order::STATUS_PENDING,
+                'status' => Order::STATUS_PENDING_PAYMENT,
                 'notes' => $orderData['notes'] ?? null,
                 'customer_mood_summary' => $orderData['mood_summary'] ?? null,
                 'user_id' => auth()->id(),
@@ -240,13 +250,24 @@ class CartService
      */
     private function getCurrentPrice(MenuItem $menu): float
     {
-        $flashSale = FlashSale::query()
-            ->where('menu_item_id', $menu->id)
-            ->where('is_active', true)
-            ->where('starts_at', '<=', now())
-            ->where('ends_at', '>=', now())
-            ->first();
+        try {
+            // Get active global flash sale (promo applies to all items)
+            $flashSale = FlashSale::query()
+                ->where('is_active', true)
+                ->where('starts_at', '<=', now())
+                ->where('ends_at', '>=', now())
+                ->first();
 
-        return $flashSale ? $flashSale->discounted_price : $menu->price;
+            if ($flashSale && $flashSale->discount_percentage > 0) {
+                // Apply discount percentage to menu price
+                $discount = ($menu->price * $flashSale->discount_percentage) / 100;
+                return round($menu->price - $discount, 2);
+            }
+
+            return $menu->price;
+        } catch (\Exception $e) {
+            \Log::warning('Error getting flash sale price, using regular price: ' . $e->getMessage());
+            return $menu->price;
+        }
     }
 }

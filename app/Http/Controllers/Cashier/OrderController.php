@@ -144,7 +144,11 @@ class OrderController extends Controller
         ]);
 
         try {
-            $order = $this->orderService->processPayment($id, $validated);
+            $order = $this->orderService->processPayment(
+                $id, 
+                $validated['payment_method'],
+                $validated['amount_paid']
+            );
 
             return redirect()
                 ->route('cashier.orders.preparing')

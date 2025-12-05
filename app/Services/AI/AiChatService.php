@@ -4,32 +4,28 @@ namespace App\Services\AI;
 
 use App\Models\MenuItem;
 use App\Models\MoodPrompt;
+use App\Services\KolosalAIService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * AI Chat Service
  * 
  * Service untuk percakapan interaktif dengan customer.
- * Bisa digunakan untuk chatbot yang lebih conversational.
- * 
- * @author [Nama Teman Anda]
+ * Menggunakan KolosalAIService untuk AI integration.
  */
 class AiChatService
 {
-    protected string $apiKey;
-    protected string $apiUrl;
-    protected string $model;
+    protected KolosalAIService $kolosalAI;
 
     /**
      * System prompt untuk AI chat
      */
     protected string $systemPrompt;
 
-    public function __construct()
+    public function __construct(KolosalAIService $kolosalAI)
     {
-        $this->apiKey = config('services.ai.api_key', '');
-        $this->apiUrl = config('services.ai.api_url', 'https://api.openai.com/v1');
-        $this->model = config('services.ai.model', 'gpt-3.5-turbo');
+        $this->kolosalAI = $kolosalAI;
 
         $this->systemPrompt = 'Kamu adalah "Brew", asisten AI barista yang ramah dan empati di MoodBrew Cafe.' . "\n\n";
         $this->systemPrompt .= 'PERSONALITY:' . "\n";
@@ -56,7 +52,7 @@ class AiChatService
      */
     public function isConfigured(): bool
     {
-        return !empty($this->apiKey) && $this->apiKey !== 'your_api_key_here';
+        return $this->kolosalAI->isEnabled();
     }
 
     /**
@@ -94,6 +90,13 @@ class AiChatService
                 'actions' => $parsedResponse['actions'],
             ];
         } catch (\Exception $e) {
+            Log::error('AI Chat error: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return [
                 'success' => false,
                 'message' => 'Maaf, saya sedang mengalami gangguan. Coba lagi nanti ya! 🙏',
@@ -150,47 +153,57 @@ class AiChatService
     }
 
     /**
-     * Call Chat API
+     * Call Chat API menggunakan KolosalAIService
      * 
      * @param array $messages
      * @return string
-     * 
-     * TODO: Implement actual API call
      */
     protected function callChatApi(array $messages): string
     {
-        // ============================================================
-        // TODO: IMPLEMENT CHAT API CALL HERE
-        // ============================================================
-        // 
-        // Contoh untuk OpenAI:
-        // 
-        // $response = Http::withHeaders([
-        //     'Authorization' => 'Bearer ' . $this->apiKey,
-        // ])->post($this->apiUrl . '/chat/completions', [
-        //     'model' => $this->model,
-        //     'messages' => $messages,
-        //     'temperature' => 0.8,
-        //     'max_tokens' => 300,
-        // ]);
-        // 
-        // return $response->json('choices.0.message.content');
-        // 
-        // ============================================================
-
-        // Mock response untuk development
-        $lastMessage = end($messages)['content'] ?? '';
-
-        if (str_contains(strtolower($lastMessage), 'menu')) {
-            return "Tentu! 📋 Kami punya berbagai pilihan menu:\n\n" .
-                "☕ **Coffee**: Espresso, Cappuccino, Latte\n" .
-                "🍵 **Non-Coffee**: Matcha, Chocolate, Fresh Juice\n" .
-                "🍰 **Food**: Croissant, Sandwich, Cake\n\n" .
-                "Mau saya rekomendasikan sesuai mood kamu?";
+        // Convert messages format untuk KolosalAI
+        // Gabungkan system + history + current message jadi satu prompt
+        $systemMessages = array_values(array_filter($messages, fn($m) => $m['role'] === 'system'));
+        $conversationMessages = array_values(array_filter($messages, fn($m) => $m['role'] !== 'system'));
+        
+        $systemPrompt = implode("\n", array_column($systemMessages, 'content'));
+        
+        // Build conversation context
+        $conversationContext = [];
+        foreach ($conversationMessages as $msg) {
+            if ($msg['role'] === 'user') {
+                $conversationContext[] = ['role' => 'user', 'content' => $msg['content']];
+            } elseif ($msg['role'] === 'assistant') {
+                $conversationContext[] = ['role' => 'assistant', 'content' => $msg['content']];
+            }
         }
-
-        return "Hai! 👋 Saya Brew, barista AI di MoodBrew.\n\n" .
-            "Ceritakan mood kamu hari ini, dan saya akan carikan minuman yang pas untukmu! ☕✨";
+        
+        // Get last user message
+        $lastUserMessage = '';
+        if (!empty($conversationMessages)) {
+            for ($i = count($conversationMessages) - 1; $i >= 0; $i--) {
+                if ($conversationMessages[$i]['role'] === 'user') {
+                    $lastUserMessage = $conversationMessages[$i]['content'];
+                    break;
+                }
+            }
+        }
+        
+        // Build full prompt
+        $fullPrompt = $systemPrompt . "\n\n" . $lastUserMessage;
+        
+        // Call KolosalAI
+        $result = $this->kolosalAI->chat($fullPrompt, [
+            'history' => count($conversationContext) > 1 ? array_slice($conversationContext, 0, -1) : []
+        ]);
+        
+        if ($result && $result['success']) {
+            return $result['content'];
+        }
+        
+        Log::warning('KolosalAI chat failed, using fallback');
+        
+        // Fallback response
+        return "Hai! 👋 Saya Brew, barista AI di MoodBrew.\n\nCeritakan mood kamu hari ini, dan saya akan carikan minuman yang pas untukmu! ☕✨";
     }
 
     /**
@@ -201,13 +214,34 @@ class AiChatService
      */
     protected function parseResponse(string $response): array
     {
-        // TODO: Implement proper parsing
-        // Bisa menggunakan regex atau JSON parsing jika AI diminta response dalam format tertentu
+        $menus = [];
+        
+        // Extract menu items yang disebutkan AI
+        // Cari nama menu dari database yang disebutkan dalam response
+        $menuItems = MenuItem::select('id', 'name', 'price', 'description', 'category')
+            ->where('is_available', true)
+            ->get();
+        
+        foreach ($menuItems as $item) {
+            // Check jika nama menu disebutkan di response (case insensitive)
+            if (stripos($response, $item->name) !== false) {
+                $menus[] = [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'price' => $item->price,
+                    'description' => $item->description,
+                    'category' => $item->category,
+                ];
+            }
+        }
+        
+        // Limit to 4 suggestions
+        $menus = array_slice($menus, 0, 4);
 
         return [
             'message' => $response,
-            'menus' => [], // Extract menu IDs jika ada
-            'actions' => [], // Extract suggested actions (order, view_menu, etc)
+            'menus' => $menus,
+            'actions' => [],
         ];
     }
 

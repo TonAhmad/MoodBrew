@@ -123,22 +123,24 @@
                                         @endif
 
                                         @php
+                                            // Mapping emoji mood ke kategori yang lebih spesifik
+                                            $moodEmoji = $entry->mood_emoji ?? '😊';
                                             $sentiment = $entry->sentiment_score ?? 0;
-                                            $sentimentClass =
-                                                $sentiment >= 0.3
-                                                    ? 'bg-green-100 text-green-700'
-                                                    : ($sentiment <= -0.3
-                                                        ? 'bg-red-100 text-red-700'
-                                                        : 'bg-gray-100 text-gray-700');
-                                            $sentimentLabel =
-                                                $sentiment >= 0.3
-                                                    ? '😊 Positive'
-                                                    : ($sentiment <= -0.3
-                                                        ? '😔 Negative'
-                                                        : '😐 Neutral');
+                                            
+                                            $vibeConfig = match($moodEmoji) {
+                                                '😊' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-700', 'emoji' => '😊', 'label' => 'Happy'],
+                                                '😌' => ['bg' => 'bg-green-100', 'text' => 'text-green-700', 'emoji' => '😌', 'label' => 'Relaxed'],
+                                                '⚡' => ['bg' => 'bg-orange-100', 'text' => 'text-orange-700', 'emoji' => '⚡', 'label' => 'Energetic'],
+                                                '😴' => ['bg' => 'bg-indigo-100', 'text' => 'text-indigo-700', 'emoji' => '😴', 'label' => 'Tired'],
+                                                '😤' => ['bg' => 'bg-red-100', 'text' => 'text-red-700', 'emoji' => '😤', 'label' => 'Stressed'],
+                                                '🥰' => ['bg' => 'bg-pink-100', 'text' => 'text-pink-700', 'emoji' => '🥰', 'label' => 'Loved'],
+                                                '🤔' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-700', 'emoji' => '🤔', 'label' => 'Thoughtful'],
+                                                '☕' => ['bg' => 'bg-amber-100', 'text' => 'text-amber-700', 'emoji' => '☕', 'label' => 'Coffee Time'],
+                                                default => ['bg' => 'bg-gray-100', 'text' => 'text-gray-700', 'emoji' => '😌', 'label' => 'Chill'],
+                                            };
                                         @endphp
-                                        <span class="px-2 py-1 {{ $sentimentClass }} text-xs rounded-full">
-                                            {{ $sentimentLabel }} ({{ number_format($sentiment, 2) }})
+                                        <span class="px-2 py-1 {{ $vibeConfig['bg'] }} {{ $vibeConfig['text'] }} text-xs rounded-full">
+                                            {{ $vibeConfig['emoji'] }} {{ $vibeConfig['label'] }} (Score: {{ number_format($sentiment, 2) }})
                                         </span>
                                     </div>
 
@@ -179,12 +181,12 @@
                                         </button>
                                     </form>
 
-                                    @if ($aiAvailable && $entry->sentiment_score == 0)
+                                    @if ($aiAvailable)
                                         <form action="{{ route('admin.vibewall.analyze', $entry) }}" method="POST">
                                             @csrf
                                             <button type="submit"
                                                 class="w-full px-4 py-2 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600 transition-colors">
-                                                Analyze
+                                                {{ $entry->sentiment_score == 0 ? 'Analyze' : 'Re-analyze' }}
                                             </button>
                                         </form>
                                     @endif

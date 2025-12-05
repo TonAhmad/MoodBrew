@@ -135,9 +135,11 @@
                             $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0;
                         @endphp
                         @if($cartCount > 0)
-                            <span id="cartBadgeDesktop" class="ml-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                            <span id="cartBadgeDesktop" data-cart-badge class="ml-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                                 {{ $cartCount }}
                             </span>
+                        @else
+                            <span id="cartBadgeDesktop" data-cart-badge class="ml-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
                         @endif
                     </a>
                 </div>
@@ -179,11 +181,11 @@
                     $cartCount = session('cart') ? array_sum(array_column(session('cart'), 'quantity')) : 0;
                 @endphp
                 @if($cartCount > 0)
-                    <span id="cartBadge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span id="cartBadge" data-cart-badge class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                         {{ $cartCount }}
                     </span>
                 @else
-                    <span id="cartBadge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full items-center justify-center hidden">0</span>
+                    <span id="cartBadge" data-cart-badge class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
                 @endif
                 <span class="text-xs mt-1">Keranjang</span>
             </a>

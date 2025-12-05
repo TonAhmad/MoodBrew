@@ -121,7 +121,7 @@
                 </div>
 
                 {{-- Feature 3: Flash Sales --}}
-                <div
+                <a href="{{ route('landing.menu') }}"
                     class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20">
                     <div
                         class="w-14 h-14 bg-brew-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brew-gold/20 transition-colors">
@@ -134,10 +134,10 @@
                         Promo dadakan dengan copywriting yang di-generate AI. Jangan lewatkan penawaran spesial di jam-jam
                         tertentu!
                     </p>
-                </div>
+                </a>
 
                 {{-- Feature 4: Silent Social Wall --}}
-                <div
+                <a href="{{ route('landing.vibewall') }}"
                     class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20">
                     <div
                         class="w-14 h-14 bg-brew-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brew-gold/20 transition-colors">
@@ -150,7 +150,7 @@
                         Bagikan vibe-mu secara anonim di wall cafe. Temukan kesamaan dengan pengunjung lain tanpa tekanan
                         sosmed.
                     </p>
-                </div>
+                </a>
 
                 {{-- Feature 5: Empathy Radar --}}
                 <div
@@ -252,16 +252,20 @@
                 Siap Mencoba Pengalaman Baru?
             </h2>
             <p class="text-brew-cream/80 text-lg mb-8 max-w-2xl mx-auto">
-                Kunjungi MoodBrew dan rasakan bagaimana AI bisa membuat pengalaman ngopi-mu lebih personal dan berkesan.
+                Kunjungi MoodBrew dan rasakan bagaimana AI bisa membuat pengalaman ngopi-mu lebih personal dan berkesan. Tidak perlu daftar, langsung pesan!
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="{{ route('register') }}"
-                    class="inline-flex items-center justify-center px-8 py-4 bg-brew-gold text-brew-dark font-bold rounded-full hover:bg-yellow-400 transition-all transform hover:scale-105 shadow-lg">
-                    Daftar Sekarang
-                </a>
                 <a href="{{ route('login') }}"
+                    class="inline-flex items-center justify-center px-8 py-4 bg-brew-gold text-brew-dark font-bold rounded-full hover:bg-yellow-400 transition-all transform hover:scale-105 shadow-lg">
+                    <span>Mulai Pesan Sekarang</span>
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </a>
+                <a href="{{ route('landing.menu') }}"
                     class="inline-flex items-center justify-center px-8 py-4 bg-white/10 text-white font-medium rounded-full hover:bg-white/20 transition-all backdrop-blur-sm">
-                    Sudah Punya Akun? Masuk
+                    Lihat Menu Kami
                 </a>
             </div>
         </div>

@@ -54,18 +54,20 @@ class LandingController extends Controller
         return view('landing.menu', [
             'menuByCategory' => $this->landingService->getMenuByCategory(),
             'featuredItems' => $this->landingService->getFeaturedMenuItems(),
+            'flashSale' => $this->landingService->getActiveFlashSale(),
         ]);
     }
 
     /**
-     * Display about page
+     * Display public vibe wall
      * 
      * @return View
      */
-    public function about(): View
+    public function vibewall(): View
     {
-        return view('landing.about', [
-            'features' => $this->landingService->getFeatures(),
+        return view('landing.vibewall', [
+            'vibes' => $this->landingService->getPublicVibes(),
+            'stats' => $this->landingService->getVibeStats(),
         ]);
     }
 }

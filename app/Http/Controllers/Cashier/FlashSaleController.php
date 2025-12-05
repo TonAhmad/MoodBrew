@@ -84,7 +84,7 @@ class FlashSaleController extends Controller
         try {
             // Calculate end time
             $validated['starts_at'] = now();
-            $validated['ends_at'] = now()->addHours($validated['duration_hours']);
+            $validated['ends_at'] = now()->addHours((int) $validated['duration_hours']);
 
             // Try to generate AI copy if available
             $aiCopy = null;
@@ -92,11 +92,14 @@ class FlashSaleController extends Controller
                 try {
                     $aiCopy = $this->aiCopywritingService->generateFlashSaleCopy(
                         $validated['name'],
-                        $validated['discount_percentage'],
-                        $validated['duration_hours'] * 60
+                        (int) $validated['discount_percentage'],
+                        (int) $validated['duration_hours'] * 60,
+                        $validated['trigger_reason'] ?? '',
+                        'urgent'
                     );
                 } catch (\Exception $e) {
                     // AI failed, continue without copy
+                    \Log::warning('AI Copywriting failed: ' . $e->getMessage());
                 }
             }
 

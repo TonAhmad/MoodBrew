@@ -4,44 +4,23 @@ namespace App\Services\AI;
 
 use App\Models\MenuItem;
 use App\Models\MoodPrompt;
+use App\Services\KolosalAIService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * AI Recommendation Service
  * 
  * Service ini menangani rekomendasi menu berdasarkan mood customer.
- * Integrasi dengan AI API (OpenAI/Groq/Gemini) dilakukan di sini.
- * 
- * @author [Nama Teman Anda]
- * @see https://platform.openai.com/docs/api-reference (OpenAI)
- * @see https://console.groq.com/docs (Groq - Gratis)
- * @see https://ai.google.dev/docs (Gemini)
+ * Menggunakan KolosalAIService untuk AI integration.
  */
 class AiRecommendationService
 {
-    /**
-     * API Key untuk AI service
-     * Set di .env: AI_API_KEY=your_key_here
-     */
-    protected string $apiKey;
+    protected KolosalAIService $kolosalAI;
 
-    /**
-     * Base URL untuk AI API
-     * Set di .env: AI_API_URL=https://api.openai.com/v1
-     */
-    protected string $apiUrl;
-
-    /**
-     * Model AI yang digunakan
-     * Set di .env: AI_MODEL=gpt-3.5-turbo
-     */
-    protected string $model;
-
-    public function __construct()
+    public function __construct(KolosalAIService $kolosalAI)
     {
-        $this->apiKey = config('services.ai.api_key', '');
-        $this->apiUrl = config('services.ai.api_url', 'https://api.openai.com/v1');
-        $this->model = config('services.ai.model', 'gpt-3.5-turbo');
+        $this->kolosalAI = $kolosalAI;
     }
 
     /**
@@ -51,7 +30,7 @@ class AiRecommendationService
      */
     public function isConfigured(): bool
     {
-        return !empty($this->apiKey) && $this->apiKey !== 'your_api_key_here';
+        return $this->kolosalAI->isEnabled();
     }
 
     /**
@@ -153,64 +132,35 @@ class AiRecommendationService
     }
 
     /**
-     * Panggil AI API
+     * Panggil AI API menggunakan KolosalAIService
      * 
      * @param string $prompt Prompt yang akan dikirim
      * @return string Response dari AI
-     * 
-     * TODO: Implement actual API call
-     * Contoh implementasi untuk OpenAI:
-     * 
-     * $response = Http::withHeaders([
-     *     'Authorization' => 'Bearer ' . $this->apiKey,
-     *     'Content-Type' => 'application/json',
-     * ])->post($this->apiUrl . '/chat/completions', [
-     *     'model' => $this->model,
-     *     'messages' => [
-     *         ['role' => 'system', 'content' => 'You are a helpful barista AI'],
-     *         ['role' => 'user', 'content' => $prompt]
-     *     ],
-     *     'temperature' => 0.7,
-     *     'max_tokens' => 500,
-     * ]);
-     * 
-     * return $response->json('choices.0.message.content');
      */
     protected function callAiApi(string $prompt): string
     {
-        // ============================================================
-        // TODO: IMPLEMENT AI API CALL HERE
-        // ============================================================
-        // 
-        // Pilih salah satu provider:
-        // 
-        // 1. OpenAI (Berbayar)
-        //    - API URL: https://api.openai.com/v1
-        //    - Model: gpt-3.5-turbo, gpt-4
-        //    - Docs: https://platform.openai.com/docs
-        // 
-        // 2. Groq (GRATIS & CEPAT)
-        //    - API URL: https://api.groq.com/openai/v1
-        //    - Model: llama-3.1-70b-versatile, mixtral-8x7b-32768
-        //    - Docs: https://console.groq.com/docs
-        // 
-        // 3. Google Gemini (Gratis tier)
-        //    - API URL: https://generativelanguage.googleapis.com/v1beta
-        //    - Model: gemini-pro
-        //    - Docs: https://ai.google.dev/docs
-        // 
-        // ============================================================
-
-        // Temporary: Return mock response untuk development
-        return json_encode([
-            'mood_analysis' => 'Customer terdeteksi sedang lelah dan butuh energi',
-            'recommendations' => [
-                ['menu_id' => 1, 'reason' => 'Espresso shot untuk boost energi instan'],
-                ['menu_id' => 2, 'reason' => 'Cappuccino dengan foam lembut yang comforting'],
-                ['menu_id' => 3, 'reason' => 'Matcha Latte untuk energi yang lebih sustained'],
-            ],
-            'empathy_message' => 'Semangat! Semoga minuman pilihan kami bisa membuat harimu lebih baik ☕',
-        ]);
+        $result = $this->kolosalAI->chat($prompt);
+        
+        if ($result && $result['success']) {
+            // AI should return JSON, extract it
+            $content = $result['content'];
+            
+            // Try to parse if it's already JSON
+            $decoded = json_decode($content, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $content;
+            }
+            
+            // If not JSON, try to extract JSON from text
+            if (preg_match('/\{.*\}/s', $content, $matches)) {
+                return $matches[0];
+            }
+            
+            Log::warning('AI response is not valid JSON', ['content' => $content]);
+        }
+        
+        // Fallback: throw exception to trigger fallback recommendation
+        throw new \Exception('AI API call failed');
     }
 
     /**
@@ -225,16 +175,49 @@ class AiRecommendationService
             $data = json_decode($aiResponse, true);
 
             if (!isset($data['recommendations'])) {
+                Log::warning('AI response missing recommendations field', ['response' => $aiResponse]);
                 return collect();
             }
 
-            $menuIds = collect($data['recommendations'])
-                ->pluck('menu_id')
+            // Extract menu names or IDs from recommendations
+            $menuNames = collect($data['recommendations'])
+                ->map(function($rec) {
+                    // Handle both formats: ["menu_id" => 1] or ["menu" => "Espresso"]
+                    if (isset($rec['menu_id'])) {
+                        return $rec['menu_id'];
+                    }
+                    if (isset($rec['menu'])) {
+                        return $rec['menu'];
+                    }
+                    return null;
+                })
                 ->filter()
                 ->toArray();
 
-            return MenuItem::whereIn('id', $menuIds)->get();
+            // Try to find by ID first
+            $menuItems = MenuItem::whereIn('id', array_filter($menuNames, 'is_numeric'))->get();
+            
+            // If not found by ID, try by name
+            if ($menuItems->isEmpty()) {
+                $menuItems = MenuItem::query()
+                    ->where(function($q) use ($menuNames) {
+                        foreach ($menuNames as $name) {
+                            if (!is_numeric($name)) {
+                                $q->orWhere('name', 'LIKE', '%' . $name . '%');
+                            }
+                        }
+                    })
+                    ->where('is_available', true)
+                    ->limit(3)
+                    ->get();
+            }
+
+            return $menuItems;
         } catch (\Exception $e) {
+            Log::error('Failed to parse AI response', [
+                'error' => $e->getMessage(),
+                'response' => $aiResponse
+            ]);
             return collect();
         }
     }

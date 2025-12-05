@@ -4,6 +4,8 @@ namespace App\Services\AI;
 
 use App\Models\FlashSale;
 use App\Models\MenuItem;
+use App\Services\KolosalAIService;
+use Illuminate\Support\Facades\Log;
 
 /**
  * AI Copywriting Service
@@ -17,15 +19,11 @@ use App\Models\MenuItem;
  */
 class AiCopywritingService
 {
-    protected string $apiKey;
-    protected string $apiUrl;
-    protected string $model;
+    protected KolosalAIService $kolosalAI;
 
-    public function __construct()
+    public function __construct(KolosalAIService $kolosalAIService)
     {
-        $this->apiKey = config('services.ai.api_key', '');
-        $this->apiUrl = config('services.ai.api_url', 'https://api.openai.com/v1');
-        $this->model = config('services.ai.model', 'gpt-3.5-turbo');
+        $this->kolosalAI = $kolosalAIService;
     }
 
     /**
@@ -35,22 +33,31 @@ class AiCopywritingService
      */
     public function isConfigured(): bool
     {
-        return !empty($this->apiKey);
+        // Check if AI is enabled and API key is configured
+        return config('services.ai.enabled', false) && !empty(config('services.ai.api_key'));
     }
 
     /**
      * Generate copywriting untuk Flash Sale
      * 
-     * @param FlashSale $flashSale
+     * @param string $name Nama promo
+     * @param int $discountPercentage Persentase diskon
+     * @param int $durationMinutes Durasi dalam menit
+     * @param string $triggerReason Alasan trigger (optional)
      * @param string $style Style copywriting: urgent, playful, elegant
      * @return array Array dengan keys: headline, description, cta, hashtags
      */
-    public function generateFlashSaleCopy(FlashSale $flashSale, string $style = 'urgent'): array
-    {
-        $prompt = $this->buildFlashSalePrompt($flashSale, $style);
+    public function generateFlashSaleCopy(
+        string $name,
+        int $discountPercentage,
+        int $durationMinutes,
+        string $triggerReason = '',
+        string $style = 'urgent'
+    ): array {
+        $prompt = $this->buildFlashSalePrompt($name, $discountPercentage, $durationMinutes, $triggerReason, $style);
         $response = $this->callAiApi($prompt);
 
-        return $this->parseFlashSaleCopy($response, $flashSale);
+        return $this->parseFlashSaleCopy($response);
     }
 
     /**
@@ -147,8 +154,13 @@ class AiCopywritingService
     /**
      * Build prompt untuk Flash Sale copywriting
      */
-    protected function buildFlashSalePrompt(FlashSale $flashSale, string $style): string
-    {
+    protected function buildFlashSalePrompt(
+        string $name,
+        int $discountPercentage,
+        int $durationMinutes,
+        string $triggerReason,
+        string $style
+    ): string {
         $styleGuide = match ($style) {
             'urgent' => 'Urgen, FOMO, countdown vibe. Gunakan caps lock untuk emphasis.',
             'playful' => 'Fun, casual, friendly. Gunakan banyak emoji.',
@@ -156,17 +168,20 @@ class AiCopywritingService
             default => 'Balanced, informative tapi menarik.',
         };
 
-        $duration = $flashSale->ends_at
-            ? $flashSale->ends_at->diffForHumans($flashSale->starts_at, ['parts' => 1])
-            : '2 jam';
+        $durationHours = round($durationMinutes / 60, 1);
+        $durationText = $durationHours >= 1 
+            ? $durationHours . ' jam'
+            : $durationMinutes . ' menit';
 
         $prompt = 'Buat copywriting Flash Sale untuk cafe:' . "\n\n";
         $prompt .= 'DETAIL PROMO:' . "\n";
-        $prompt .= '- Nama: ' . $flashSale->name . "\n";
-        $prompt .= '- Diskon: ' . $flashSale->discount_percentage . '%' . "\n";
-        $prompt .= '- Kode Promo: ' . $flashSale->promo_code . "\n";
-        $prompt .= '- Durasi: ' . $duration . "\n";
-        $prompt .= '- Alasan: ' . $flashSale->trigger_reason . "\n\n";
+        $prompt .= '- Nama: ' . $name . "\n";
+        $prompt .= '- Diskon: ' . $discountPercentage . '%' . "\n";
+        $prompt .= '- Durasi: ' . $durationText . "\n";
+        if (!empty($triggerReason)) {
+            $prompt .= '- Alasan: ' . $triggerReason . "\n";
+        }
+        $prompt .= "\n";
         $prompt .= 'STYLE GUIDE: ' . $styleGuide . "\n\n";
         $prompt .= 'OUTPUT FORMAT (JSON):' . "\n";
         $prompt .= '{' . "\n";
@@ -185,19 +200,29 @@ class AiCopywritingService
      * 
      * @param string $prompt
      * @return string
-     * 
-     * TODO: Implement actual API call
      */
     protected function callAiApi(string $prompt): string
     {
-        // ============================================================
-        // TODO: IMPLEMENT AI API CALL HERE
-        // ============================================================
-        // 
-        // Sama seperti AiRecommendationService
-        // 
-        // ============================================================
+        try {
+            $result = $this->kolosalAI->chat($prompt);
+            
+            if ($result && $result['success']) {
+                return $result['content'];
+            }
+            
+            Log::warning('KolosalAI copywriting failed, using fallback');
+            return $this->getFallbackResponse($prompt);
+        } catch (\Exception $e) {
+            Log::error('AI Copywriting error: ' . $e->getMessage());
+            return $this->getFallbackResponse($prompt);
+        }
+    }
 
+    /**
+     * Get fallback response when AI fails
+     */
+    protected function getFallbackResponse(string $prompt): string
+    {
         // Mock response untuk Flash Sale
         if (str_contains($prompt, 'Flash Sale')) {
             return json_encode([
@@ -225,22 +250,22 @@ class AiCopywritingService
     /**
      * Parse Flash Sale copy response
      */
-    protected function parseFlashSaleCopy(string $response, FlashSale $flashSale): array
+    protected function parseFlashSaleCopy(string $response): array
     {
         try {
             $data = json_decode($response, true);
 
             return [
-                'headline' => $data['headline'] ?? "⚡ Flash Sale {$flashSale->discount_percentage}%!",
-                'description' => $data['description'] ?? "Gunakan kode {$flashSale->promo_code}",
+                'headline' => $data['headline'] ?? "⚡ Flash Sale Spesial!",
+                'description' => $data['description'] ?? "Diskon terbatas untuk semua menu favorit!",
                 'cta' => $data['cta'] ?? 'ORDER SEKARANG',
                 'hashtags' => $data['hashtags'] ?? ['#MoodBrew'],
             ];
         } catch (\Exception $e) {
             // Fallback
             return [
-                'headline' => "⚡ Flash Sale {$flashSale->discount_percentage}% OFF!",
-                'description' => "Gunakan kode promo {$flashSale->promo_code}. Berlaku terbatas!",
+                'headline' => "⚡ Flash Sale Spesial!",
+                'description' => "Nikmati diskon terbatas untuk semua menu. Buruan order!",
                 'cta' => 'ORDER NOW',
                 'hashtags' => ['#MoodBrew', '#FlashSale'],
             ];

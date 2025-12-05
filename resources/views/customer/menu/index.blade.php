@@ -229,7 +229,9 @@ async function addToCart(menuItemId) {
         const data = await response.json();
         if (data.success) {
             showToast(data.message);
-            updateCartBadge(data.cart_count);
+            if (data.cart_count) {
+                updateCartBadge(data.cart_count);
+            }
         } else {
             showToast(data.message, 'error');
         }
@@ -251,11 +253,15 @@ function showToast(message, type = 'success') {
 }
 
 function updateCartBadge(count) {
-    const badge = document.getElementById('cartBadge');
-    if (badge) {
+    const badges = document.querySelectorAll('[data-cart-badge]');
+    badges.forEach(badge => {
         badge.textContent = count;
-        badge.classList.remove('hidden');
-    }
+        if (count > 0) {
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    });
 }
 </script>
 @endpush

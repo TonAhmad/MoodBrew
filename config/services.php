@@ -41,30 +41,32 @@ return [
     |--------------------------------------------------------------------------
     |
     | Konfigurasi untuk AI services yang digunakan di MoodBrew.
-    | Support multiple providers: OpenAI, Groq (Free), Gemini
+    | Support multiple providers: OpenAI, Groq (Free), Gemini, Kolosal AI
     |
     | Provider options:
     | - openai: https://api.openai.com/v1
     | - groq: https://api.groq.com/openai/v1 (GRATIS & CEPAT!)
     | - gemini: https://generativelanguage.googleapis.com/v1beta
+    | - kolosal: https://api.kolosal.ai/v1
     |
     */
 
     'ai' => [
-        // Provider yang digunakan: openai, groq, gemini
-        'provider' => env('AI_PROVIDER', 'groq'),
+        // Provider yang digunakan: openai, groq, gemini, kolosal
+        'provider' => env('AI_PROVIDER', 'kolosal'),
 
         // API Key (dari provider yang dipilih)
         'api_key' => env('AI_API_KEY', ''),
 
         // API Base URL
-        'api_url' => env('AI_API_URL', 'https://api.groq.com/openai/v1'),
+        'api_url' => env('AI_API_URL', 'https://api.kolosal.ai/v1'),
 
         // Model yang digunakan
         // OpenAI: gpt-3.5-turbo, gpt-4, gpt-4-turbo
         // Groq: llama-3.1-70b-versatile, mixtral-8x7b-32768
         // Gemini: gemini-pro
-        'model' => env('AI_MODEL', 'llama-3.1-70b-versatile'),
+        // Kolosal: meta-llama/llama-4-maverick-17b-128e-instruct
+        'model' => env('AI_MODEL', 'meta-llama/llama-4-maverick-17b-128e-instruct'),
 
         // Temperature (0-1, lebih tinggi = lebih kreatif)
         'temperature' => env('AI_TEMPERATURE', 0.7),

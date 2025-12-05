@@ -27,7 +27,7 @@ class AiController extends Controller
     /**
      * Get recommendation berdasarkan mood
      * 
-     * @route POST /order/ai/recommend
+     * @route POST /api/ai/recommend
      * @param Request $request
      * @return JsonResponse
      * 
@@ -55,6 +55,19 @@ class AiController extends Controller
             userId: auth()->id(),
             sessionId: session()->getId()
         );
+
+        // Transform recommendations untuk include semua data yang diperlukan
+        if (isset($result['recommendations']) && is_array($result['recommendations'])) {
+            $result['recommendations'] = collect($result['recommendations'])->map(function($item) {
+                return [
+                    'id' => $item['id'],
+                    'name' => $item['name'],
+                    'price' => $item['price'],
+                    'description' => $item['description'] ?? '',
+                    'image_url' => $item['image_url'] ?? null,
+                ];
+            })->toArray();
+        }
 
         return response()->json($result);
     }
@@ -87,6 +100,19 @@ class AiController extends Controller
             userId: auth()->id(),
             sessionId: session()->getId()
         );
+
+        // Transform menu suggestions untuk include semua data
+        if (isset($result['suggested_menus']) && is_array($result['suggested_menus'])) {
+            $result['suggested_menus'] = collect($result['suggested_menus'])->map(function($item) {
+                return [
+                    'id' => $item['id'],
+                    'name' => $item['name'],
+                    'price' => $item['price'],
+                    'description' => $item['description'] ?? '',
+                    'category' => $item['category'] ?? 'coffee',
+                ];
+            })->toArray();
+        }
 
         return response()->json($result);
     }

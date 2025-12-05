@@ -39,19 +39,31 @@ class CartController extends Controller
      */
     public function add(Request $request): JsonResponse
     {
-        $request->validate([
-            'menu_item_id' => 'required|exists:menu_items,id',
-            'quantity' => 'integer|min:1|max:10',
-            'note' => 'nullable|string|max:200',
-        ]);
+        try {
+            $request->validate([
+                'menu_item_id' => 'required|exists:menu_items,id',
+                'quantity' => 'integer|min:1|max:10',
+                'note' => 'nullable|string|max:200',
+            ]);
 
-        $result = $this->cartService->addToCart(
-            $request->menu_item_id,
-            $request->quantity ?? 1,
-            $request->note ?? ''
-        );
+            $result = $this->cartService->addToCart(
+                $request->menu_item_id,
+                $request->quantity ?? 1,
+                $request->note ?? ''
+            );
 
-        return response()->json($result);
+            return response()->json($result);
+        } catch (\Exception $e) {
+            \Log::error('Add to cart error: ' . $e->getMessage(), [
+                'menu_item_id' => $request->menu_item_id ?? null,
+                'exception' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan ke keranjang: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

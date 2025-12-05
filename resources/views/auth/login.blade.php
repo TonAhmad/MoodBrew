@@ -74,7 +74,7 @@
             <div class="text-center mt-6 space-y-2">
                 <p class="text-gray-600">
                     Customer?
-                    <a href="{{ route('customer.access.form') }}"
+                    <a href="{{ route('login') }}"
                         class="text-brew-gold hover:text-brew-brown font-medium transition-colors">
                         Pesan tanpa login di sini
                     </a>

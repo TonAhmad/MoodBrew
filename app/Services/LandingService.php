@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\MenuItem;
 use App\Models\FlashSale;
+use App\Models\VibeEntry;
 use Illuminate\Support\Collection;
 
 /**
@@ -149,6 +150,38 @@ class LandingService
                 'title' => 'Bayar & Nikmati',
                 'description' => 'Orderan masuk ke kasir. Bayar saat siap, dan nikmati minumanmu yang diantar ke meja.',
             ],
+        ];
+    }
+
+    /**
+     * Get public vibes (approved only)
+     * 
+     * @param int $limit
+     * @return Collection
+     */
+    public function getPublicVibes(int $limit = 20): Collection
+    {
+        return VibeEntry::query()
+            ->where('is_approved', true)
+            ->with('user')
+            ->latest()
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Get vibe wall statistics
+     * 
+     * @return array
+     */
+    public function getVibeStats(): array
+    {
+        $approvedVibes = VibeEntry::where('is_approved', true);
+        
+        return [
+            'total' => $approvedVibes->count(),
+            'today' => $approvedVibes->whereDate('created_at', today())->count(),
+            'featured' => VibeEntry::where('is_featured', true)->count(),
         ];
     }
 }

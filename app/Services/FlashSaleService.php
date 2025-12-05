@@ -65,7 +65,9 @@ class FlashSaleService
             'starts_at' => $data['starts_at'] ?? now(),
             'ends_at' => $data['ends_at'] ?? now()->addHours(2),
             'is_active' => true,
-            'ai_generated_copy' => $data['ai_generated_copy'] ?? null,
+            'ai_generated_copy' => isset($data['ai_generated_copy']) && is_array($data['ai_generated_copy']) 
+                ? json_encode($data['ai_generated_copy']) 
+                : $data['ai_generated_copy'] ?? null,
         ]);
     }
 

@@ -4,7 +4,7 @@
 @section('page-title', 'Dashboard Kasir')
 
 @section('content')
-    <div class="space-y-6">
+    <div class="space-y-6" x-data="cashierDashboard()">
         {{-- Active Flash Sale Banner --}}
         @if ($activeFlashSale)
             <div class="bg-gradient-to-r from-brew-gold to-yellow-500 rounded-xl p-4 text-brew-dark">
@@ -185,22 +185,33 @@
                                 </div>
 
                                 {{-- Action Buttons --}}
-                                <div class="flex space-x-2">
-                                    <button
-                                        class="flex-1 py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-sm">
-                                        💵 Bayar Cash
+                                <div class="flex gap-2">
+                                    <button @click="openPaymentModal({{ $order->id }}, '{{ $order->order_number }}', {{ $order->total_amount }}, 'cash')"
+                                        class="flex-1 py-2.5 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-sm flex items-center justify-center">
+                                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                        </svg>
+                                        Cash
                                     </button>
-                                    <button
-                                        class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm">
-                                        📱 Bayar QRIS
+                                    <button @click="processPayment({{ $order->id }}, 'qris', {{ $order->total_amount }})"
+                                        class="flex-1 py-2.5 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm flex items-center justify-center">
+                                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                                        </svg>
+                                        QRIS
                                     </button>
-                                    <button
-                                        class="py-2 px-4 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm">
+                                    <button @click="processPayment({{ $order->id }}, 'debit', {{ $order->total_amount }})"
+                                        class="py-2.5 px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium text-sm flex items-center justify-center">
+                                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                                        </svg>
                                         Debit
                                     </button>
-                                    <button
-                                        class="py-2 px-4 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm">
-                                        ✕
+                                    <button @click="cancelOrder({{ $order->id }}, '{{ $order->order_number }}')"
+                                        class="py-2.5 px-3 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors text-sm font-medium">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
                                     </button>
                                 </div>
                             </div>
@@ -209,5 +220,229 @@
                 @endif
             </div>
         </div>
+
+        {{-- Payment Modal --}}
+        <div x-show="showPaymentModal" 
+             x-cloak
+             @keydown.escape.window="showPaymentModal = false"
+             class="fixed inset-0 z-50 overflow-y-auto"
+             style="display: none;">
+            <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                {{-- Background overlay --}}
+                <div x-show="showPaymentModal"
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     @click="showPaymentModal = false"
+                     class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"></div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+
+                {{-- Modal panel --}}
+                <div x-show="showPaymentModal"
+                     x-transition:enter="ease-out duration-300"
+                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave="ease-in duration-200"
+                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    
+                    <form @submit.prevent="submitPayment" class="p-6">
+                        {{-- Header --}}
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold text-brew-dark flex items-center">
+                                <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                Proses Pembayaran Cash
+                            </h3>
+                            <p class="text-gray-600 text-sm mt-1">Order: <span x-text="selectedOrder.number" class="font-semibold"></span></p>
+                        </div>
+
+                        {{-- Total Amount --}}
+                        <div class="mb-6 p-4 bg-blue-50 rounded-xl">
+                            <p class="text-sm text-blue-700 mb-1">Total Pembayaran</p>
+                            <p class="text-3xl font-bold text-blue-900">
+                                Rp <span x-text="formatNumber(selectedOrder.total)"></span>
+                            </p>
+                        </div>
+
+                        {{-- Amount Paid Input --}}
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Uang Diterima <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" 
+                                   x-model="amountPaid"
+                                   @input="calculateChange"
+                                   min="0"
+                                   step="1000"
+                                   required
+                                   class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                   placeholder="0">
+                            
+                            {{-- Quick amount buttons --}}
+                            <div class="grid grid-cols-4 gap-2 mt-3">
+                                <button type="button" @click="setAmount(selectedOrder.total)" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium">Pas</button>
+                                <button type="button" @click="setAmount(50000)" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium">50K</button>
+                                <button type="button" @click="setAmount(100000)" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium">100K</button>
+                                <button type="button" @click="setAmount(200000)" class="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium">200K</button>
+                            </div>
+                        </div>
+
+                        {{-- Change Amount --}}
+                        <div class="mb-6 p-4 rounded-xl" :class="changeAmount >= 0 ? 'bg-green-50' : 'bg-red-50'">
+                            <p class="text-sm mb-1" :class="changeAmount >= 0 ? 'text-green-700' : 'text-red-700'">Kembalian</p>
+                            <p class="text-2xl font-bold" :class="changeAmount >= 0 ? 'text-green-900' : 'text-red-900'">
+                                Rp <span x-text="formatNumber(Math.max(0, changeAmount))"></span>
+                            </p>
+                            <p x-show="changeAmount < 0" class="text-xs text-red-600 mt-1">
+                                ⚠️ Uang kurang Rp <span x-text="formatNumber(Math.abs(changeAmount))"></span>
+                            </p>
+                        </div>
+
+                        {{-- Actions --}}
+                        <div class="flex gap-3">
+                            <button type="button" 
+                                    @click="showPaymentModal = false"
+                                    class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                    :disabled="changeAmount < 0 || !amountPaid"
+                                    :class="changeAmount >= 0 && amountPaid ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-300 cursor-not-allowed'"
+                                    class="flex-1 px-4 py-3 text-white font-semibold rounded-xl transition-colors">
+                                ✓ Bayar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+function cashierDashboard() {
+    return {
+        showPaymentModal: false,
+        selectedOrder: {
+            id: null,
+            number: '',
+            total: 0,
+            method: 'cash'
+        },
+        amountPaid: 0,
+        changeAmount: 0,
+
+        openPaymentModal(orderId, orderNumber, total, method) {
+            this.selectedOrder = {
+                id: orderId,
+                number: orderNumber,
+                total: total,
+                method: method
+            };
+            this.amountPaid = 0;
+            this.changeAmount = -total;
+            this.showPaymentModal = true;
+        },
+
+        setAmount(amount) {
+            this.amountPaid = amount;
+            this.calculateChange();
+        },
+
+        calculateChange() {
+            this.changeAmount = this.amountPaid - this.selectedOrder.total;
+        },
+
+        formatNumber(num) {
+            return new Intl.NumberFormat('id-ID').format(num || 0);
+        },
+
+        async processPayment(orderId, method, total) {
+            if (method === 'cash') {
+                this.openPaymentModal(orderId, `#${orderId}`, total, method);
+                return;
+            }
+
+            // For QRIS and Debit, process directly
+            if (!confirm(`Konfirmasi pembayaran dengan ${method.toUpperCase()}?`)) return;
+
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('payment_method', method);
+            formData.append('amount_paid', total);
+
+            try {
+                const response = await fetch(`/cashier/orders/${orderId}/payment`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Gagal memproses pembayaran');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan');
+            }
+        },
+
+        async submitPayment() {
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('payment_method', this.selectedOrder.method);
+            formData.append('amount_paid', this.amountPaid);
+
+            try {
+                const response = await fetch(`/cashier/orders/${this.selectedOrder.id}/payment`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Gagal memproses pembayaran');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan');
+            }
+        },
+
+        async cancelOrder(orderId, orderNumber) {
+            if (!confirm(`Yakin ingin membatalkan pesanan ${orderNumber}?`)) return;
+
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('_method', 'DELETE');
+
+            try {
+                const response = await fetch(`/cashier/orders/${orderId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Gagal membatalkan pesanan');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan');
+            }
+        }
+    }
+}
+</script>
+@endpush

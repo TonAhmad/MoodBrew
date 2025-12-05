@@ -59,40 +59,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Display register page
-     */
-    public function showRegister(): View
-    {
-        return view('auth.register');
-    }
-
-    /**
-     * Handle customer registration (dengan password, optional)
-     */
-    public function register(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:100', 'min:2'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $result = $this->authService->registerCustomer(
-            $validated['name'],
-            $validated['email'],
-            $validated['password']
-        );
-
-        if (!$result['success']) {
-            return back()
-                ->withInput($request->only('name', 'email'))
-                ->withErrors(['email' => $result['message']]);
-        }
-
-        return redirect()->route('customer.home')->with('success', $result['message']);
-    }
-
-    /**
      * Display customer quick-access page
      * Tanpa password, hanya nama dan email
      */

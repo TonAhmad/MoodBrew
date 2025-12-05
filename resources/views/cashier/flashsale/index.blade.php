@@ -21,36 +21,6 @@
         @endif
     </div>
 
-    <!-- AI Status Banner -->
-    @if(!$isAiAvailable)
-    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
-        <div class="flex items-start gap-3">
-            <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
-            </div>
-            <div>
-                <h3 class="font-semibold text-amber-800">🔧 AI Copywriting Sedang Maintenance</h3>
-                <p class="text-sm text-amber-700 mt-1">
-                    Fitur AI copywriting untuk generate promo copy sedang dalam pengembangan. 
-                    Anda masih dapat membuat flash sale dengan copy manual.
-                </p>
-                <div class="mt-3 flex items-center gap-2">
-                    <span class="inline-flex items-center px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full">
-                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        </svg>
-                        Under Development
-                    </span>
-                    <span class="text-xs text-amber-600">ETA: Coming Soon</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
@@ -136,9 +106,45 @@
         </div>
 
         @if($activeFlashSale->ai_generated_copy)
-        <div class="mt-4 p-4 bg-white/10 rounded-lg">
-            <p class="text-sm font-medium mb-1">🤖 AI Generated Copy:</p>
-            <p class="text-white/90 italic">"{{ $activeFlashSale->ai_generated_copy }}"</p>
+        <div class="mt-4 p-4 bg-white/10 rounded-lg border border-white/20">
+            <p class="text-sm font-medium mb-3 flex items-center">
+                <span class="text-lg mr-2">🤖</span>
+                AI Generated Copy:
+            </p>
+            @php
+                $aiCopy = is_string($activeFlashSale->ai_generated_copy) 
+                    ? json_decode($activeFlashSale->ai_generated_copy, true) 
+                    : $activeFlashSale->ai_generated_copy;
+            @endphp
+            
+            @if($aiCopy && is_array($aiCopy))
+            <div class="space-y-2">
+                <div>
+                    <p class="text-xs text-white/70 uppercase tracking-wide mb-1">Headline:</p>
+                    <p class="text-white font-bold text-lg">{{ $aiCopy['headline'] ?? '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-white/70 uppercase tracking-wide mb-1">Description:</p>
+                    <p class="text-white/90">{{ $aiCopy['description'] ?? '-' }}</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div>
+                        <p class="text-xs text-white/70 uppercase tracking-wide mb-1">CTA:</p>
+                        <span class="inline-block px-3 py-1 bg-white text-orange-600 font-bold rounded text-sm">
+                            {{ $aiCopy['cta'] ?? 'ORDER NOW' }}
+                        </span>
+                    </div>
+                    @if(isset($aiCopy['hashtags']) && is_array($aiCopy['hashtags']))
+                    <div>
+                        <p class="text-xs text-white/70 uppercase tracking-wide mb-1">Hashtags:</p>
+                        <p class="text-white/90 text-sm">{{ implode(' ', $aiCopy['hashtags']) }}</p>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @else
+            <p class="text-white/90 italic">{{ $activeFlashSale->ai_generated_copy }}</p>
+            @endif
         </div>
         @endif
     </div>

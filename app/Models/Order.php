@@ -32,7 +32,9 @@ class Order extends Model
      * Status constants
      */
     public const STATUS_PENDING_PAYMENT = 'pending_payment';
+    public const STATUS_PAID_PREPARING = 'paid_preparing'; // Alias for preparing
     public const STATUS_PREPARING = 'preparing';
+    public const STATUS_SERVED = 'served'; // Alias for ready
     public const STATUS_READY = 'ready';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';

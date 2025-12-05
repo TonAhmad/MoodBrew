@@ -14,10 +14,10 @@
                     </div>
                 </a>
                 <h1 class="font-display text-3xl font-bold text-brew-dark">
-                    Siap Ngopi? ☕
+                    Mulai Pesan di MoodBrew ☕
                 </h1>
                 <p class="text-gray-600 mt-2">
-                    Isi data singkat untuk mulai. Tidak perlu password!
+                    Isi data singkat untuk mulai. Tidak perlu password, langsung pesan!
                 </p>
             </div>
 
@@ -91,7 +91,7 @@
             {{-- Staff Login Link --}}
             <p class="text-center mt-6 text-gray-500 text-sm">
                 Staff?
-                <a href="{{ route('login') }}" class="text-brew-gold hover:text-brew-brown font-medium transition-colors">
+                <a href="{{ route('staff.login') }}" class="text-brew-gold hover:text-brew-brown font-medium transition-colors">
                     Login di sini
                 </a>
             </p>
