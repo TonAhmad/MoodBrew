@@ -112,6 +112,7 @@ class MenuService
             'stock_quantity' => $data['stock_quantity'] ?? 100,
             'is_available' => $data['is_available'] ?? true,
             'flavor_profile' => $this->parseFlavorProfile($data),
+            'image_path' => $data['image_path'] ?? null,
         ]);
 
         return [
@@ -146,6 +147,7 @@ class MenuService
             'category' => $data['category'] ?? $menuItem->category,
             'stock_quantity' => $data['stock_quantity'] ?? $menuItem->stock_quantity,
             'is_available' => $data['is_available'] ?? $menuItem->is_available,
+            'image_path' => $data['image_path'] ?? $menuItem->image_path,
         ];
 
         // Update slug jika nama berubah

@@ -59,7 +59,9 @@ class MenuController extends Controller
      */
     public function create(): View
     {
-        $categories = MenuItem::CATEGORIES;
+        // pakai helper dari model
+        $categories = MenuItem::getCategories();
+
         return view('admin.menu.create', compact('categories'));
     }
 
@@ -68,19 +70,29 @@ class MenuController extends Controller
      */
     public function store(MenuItemRequest $request): RedirectResponse
     {
-        $this->menuService->createMenuItem($request->validated());
+    $data = $request->validated();
 
-        return redirect()
-            ->route('admin.menu.index')
-            ->with('success', 'Menu item berhasil ditambahkan!');
+    // simpan file gambar jika ada
+    if ($request->hasFile('image')) {
+        $data['image_path'] = $request->file('image')->store('menu-items', 'public');
     }
+
+    $this->menuService->createMenuItem($data);
+
+    return redirect()
+        ->route('admin.menu.index')
+        ->with('success', 'Menu item berhasil ditambahkan!');
+    }
+
 
     /**
      * Show form for editing menu item
      */
     public function edit(MenuItem $menu): View
     {
-        $categories = MenuItem::CATEGORIES;
+        // sama: pakai getCategories()
+        $categories = MenuItem::getCategories();
+
         return view('admin.menu.edit', compact('menu', 'categories'));
     }
 
@@ -89,19 +101,28 @@ class MenuController extends Controller
      */
     public function update(MenuItemRequest $request, MenuItem $menu): RedirectResponse
     {
-        $this->menuService->updateMenuItem($menu, $request->validated());
+    $data = $request->validated();
 
-        return redirect()
-            ->route('admin.menu.index')
-            ->with('success', 'Menu item berhasil diperbarui!');
+    // kalau upload gambar baru, simpan dan override image_path
+    if ($request->hasFile('image')) {
+        $data['image_path'] = $request->file('image')->store('menu-items', 'public');
     }
+
+    $this->menuService->updateMenuItem($menu->id, $data);
+
+    return redirect()
+        ->route('admin.menu.index')
+        ->with('success', 'Menu item berhasil diperbarui!');
+    }
+
 
     /**
      * Delete menu item
      */
     public function destroy(MenuItem $menu): RedirectResponse
     {
-        $this->menuService->deleteMenuItem($menu);
+        // kirim ID, bukan object
+        $this->menuService->deleteMenuItem($menu->id);
 
         return redirect()
             ->route('admin.menu.index')

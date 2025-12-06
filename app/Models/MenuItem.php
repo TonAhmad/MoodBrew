@@ -48,7 +48,18 @@ class MenuItem extends Model
         'stock_quantity',
         'is_available',
         'flavor_profile',
+        'image_path',
     ];
+
+    public function getImageUrlAttribute(): ?string
+    {
+    if (!$this->image_path) {
+        return null;
+    }
+
+    // file disimpan di disk "public"
+    return asset('storage/' . $this->image_path);
+    }
 
     /**
      * Get the attributes that should be cast.

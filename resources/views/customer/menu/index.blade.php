@@ -123,8 +123,16 @@
                                 @foreach($popularItems as $item)
                                     <a href="{{ route('customer.menu.show', $item->slug) }}" 
                                        class="flex-shrink-0 w-32 lg:w-full bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow">
-                                        <div class="w-full h-16 lg:h-24 bg-brew-cream rounded-lg mb-2 flex items-center justify-center">
-                                            <span class="text-2xl lg:text-4xl">{{ $item->category === 'coffee' ? '☕' : '🥤' }}</span>
+                                       <div class="w-full h-16 lg:h-24 bg-brew-cream rounded-lg mb-2 flex items-center justify-center overflow-hidden">
+                                         @if($item->image_path)
+                                         <img src="{{ asset('storage/'.$item->image_path) }}"
+                                         alt="{{ $item->name }}"
+                                         class="w-full h-full object-cover">
+                                         @else
+                                        <span class="text-2xl lg:text-4xl">
+                                        {{ $item->category === 'coffee' ? '☕' : '🥤' }}
+                                        </span>
+                                        @endif
                                         </div>
                                         <p class="font-semibold text-brew-dark text-xs lg:text-sm truncate">{{ $item->name }}</p>
                                         <p class="text-brew-gold font-bold text-sm lg:text-base">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
@@ -159,20 +167,28 @@
                                 @foreach($menuItems as $item)
                                     <a href="{{ route('customer.menu.show', $item->slug) }}" 
                                        class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow group">
-                                        <div class="w-full h-28 lg:h-40 bg-brew-cream flex items-center justify-center relative">
-                                            <span class="text-4xl lg:text-6xl group-hover:scale-110 transition-transform">
-                                                {{ $item->category === 'coffee' ? '☕' : ($item->category === 'pastry' ? '🥐' : '🥤') }}
-                                            </span>
-                                            @if(!$item->is_available || $item->stock_quantity <= 0)
-                                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                                    <span class="text-white text-xs font-semibold bg-red-500 px-2 py-1 rounded">Habis</span>
-                                                </div>
-                                            @elseif($flashSales->isNotEmpty())
-                                                <div class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                                                    -{{ $flashSales->first()->discount_percentage }}%
-                                                </div>
-                                            @endif
-                                        </div>
+                                        <div class="w-full h-28 lg:h-40 bg-brew-cream flex items-center justify-center relative overflow-hidden">
+    @if($item->image_path)
+        <img src="{{ asset('storage/'.$item->image_path) }}"
+             alt="{{ $item->name }}"
+             class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+    @else
+        <span class="text-4xl lg:text-6xl group-hover:scale-110 transition-transform">
+            {{ $item->category === 'coffee' ? '☕' : ($item->category === 'pastry' ? '🥐' : '🥤') }}
+        </span>
+    @endif
+
+    @if(!$item->is_available || $item->stock_quantity <= 0)
+        <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <span class="text-white text-xs font-semibold bg-red-500 px-2 py-1 rounded">Habis</span>
+        </div>
+    @elseif($flashSales->isNotEmpty())
+        <div class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+            -{{ $flashSales->first()->discount_percentage }}%
+        </div>
+    @endif
+</div>
+
                                         <div class="p-3 lg:p-4">
                                             <p class="font-semibold text-brew-dark text-sm lg:text-base truncate">{{ $item->name }}</p>
                                             <p class="text-gray-500 text-xs lg:text-sm truncate">{{ $item->description ?? 'Minuman nikmat' }}</p>

@@ -110,7 +110,7 @@
                         Flavor Profile (untuk AI)
                     </label>
                     <input type="text" name="flavor_profile" id="flavor_profile"
-                        value="{{ old('flavor_profile', $menu->flavor_profile) }}"
+                        value="{{ old('flavor_profile', $menu->flavor_profile['notes'] ?? '') }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brew-gold focus:border-brew-gold"
                         placeholder="Contoh: rich, creamy, chocolate notes">
                 </div>
