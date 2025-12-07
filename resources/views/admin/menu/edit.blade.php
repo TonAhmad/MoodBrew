@@ -26,11 +26,11 @@
                 @method('PUT')
 
                 {{-- Current Image --}}
-                @if ($menu->image)
+                @if ($menu->image_path)
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Saat Ini</label>
-                        <img src="{{ asset('storage/' . $menu->image) }}" alt="{{ $menu->name }}"
-                            class="w-32 h-32 object-cover rounded-lg">
+                        <img src="{{ asset('storage/' . $menu->image_path) }}" alt="{{ $menu->name }}"
+                            class="w-32 h-32 object-cover rounded-lg border-2 border-gray-200">
                     </div>
                 @endif
 
@@ -54,10 +54,10 @@
                     <select name="category" id="category" required
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brew-gold focus:border-brew-gold @error('category') border-red-500 @enderror">
                         <option value="">Pilih Kategori</option>
-                        @foreach ($categories as $category)
-                            <option value="{{ $category }}"
-                                {{ old('category', $menu->category) === $category ? 'selected' : '' }}>
-                                {{ $category }}
+                        @foreach ($categories as $key => $label)
+                            <option value="{{ $key }}"
+                                {{ old('category', $menu->category) === $key ? 'selected' : '' }}>
+                                {{ $label }}
                             </option>
                         @endforeach
                     </select>
@@ -94,57 +94,117 @@
                 {{-- Image --}}
                 <div>
                     <label for="image" class="block text-sm font-medium text-gray-700 mb-1">
-                        Ganti Gambar
+                        {{ $menu->image_path ? 'Ganti Gambar' : 'Upload Gambar' }}
                     </label>
                     <input type="file" name="image" id="image" accept="image/*"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brew-gold focus:border-brew-gold @error('image') border-red-500 @enderror">
-                    <p class="text-sm text-gray-500 mt-1">Biarkan kosong jika tidak ingin mengganti gambar</p>
+                    <p class="text-sm text-gray-500 mt-1">Format: JPG, PNG, JPEG. Maksimal 2MB. {{ $menu->image_path ? 'Biarkan kosong jika tidak ingin mengganti.' : '' }}</p>
                     @error('image')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
-                {{-- Flavor Profile --}}
-                <div>
-                    <label for="flavor_profile" class="block text-sm font-medium text-gray-700 mb-1">
-                        Flavor Profile (untuk AI)
-                    </label>
-                    <input type="text" name="flavor_profile" id="flavor_profile"
-                        value="{{ old('flavor_profile', $menu->flavor_profile['notes'] ?? '') }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brew-gold focus:border-brew-gold"
-                        placeholder="Contoh: rich, creamy, chocolate notes">
-                </div>
+                {{-- Stock & Availability --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                        <label for="stock_quantity" class="block text-sm font-medium text-gray-700 mb-2">
+                            Stok
+                        </label>
+                        <input type="number" id="stock_quantity" name="stock_quantity" min="0"
+                            value="{{ old('stock_quantity', $menu->stock_quantity) }}"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brew-gold focus:border-brew-gold">
+                    </div>
 
-                {{-- Mood Tags --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Mood Tags (untuk AI)
-                    </label>
-                    <div class="flex flex-wrap gap-3">
-                        @php
-                            $moods = ['energetic', 'relaxed', 'happy', 'focused', 'cozy'];
-                            $currentMoods = old('mood_tags', $menu->mood_tags ?? []);
-                            if (is_string($currentMoods)) {
-                                $currentMoods = json_decode($currentMoods, true) ?? [];
-                            }
-                        @endphp
-                        @foreach ($moods as $mood)
-                            <label class="flex items-center space-x-2 cursor-pointer">
-                                <input type="checkbox" name="mood_tags[]" value="{{ $mood }}"
-                                    {{ in_array($mood, $currentMoods) ? 'checked' : '' }}
-                                    class="w-4 h-4 text-brew-gold border-gray-300 rounded focus:ring-brew-gold">
-                                <span class="text-sm text-gray-700 capitalize">{{ $mood }}</span>
-                            </label>
-                        @endforeach
+                    <div class="flex items-center pt-8">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="is_available" value="1"
+                                {{ old('is_available', $menu->is_available) ? 'checked' : '' }} class="sr-only peer">
+                            <div
+                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brew-gold/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brew-gold">
+                            </div>
+                            <span class="ml-3 text-sm font-medium text-gray-700">Tersedia untuk dijual</span>
+                        </label>
                     </div>
                 </div>
 
-                {{-- Availability --}}
-                <div class="flex items-center space-x-2">
-                    <input type="checkbox" name="is_available" id="is_available" value="1"
-                        {{ old('is_available', $menu->is_available) ? 'checked' : '' }}
-                        class="w-4 h-4 text-brew-gold border-gray-300 rounded focus:ring-brew-gold">
-                    <label for="is_available" class="text-sm text-gray-700">Tersedia untuk dijual</label>
+                {{-- Flavor Profile Section (untuk AI) --}}
+                @php
+                    $flavorProfile = $menu->flavor_profile ?? [];
+                @endphp
+                <div class="border-t border-gray-200 pt-5">
+                    <h3 class="text-sm font-semibold text-gray-700 mb-3">
+                        Profil Rasa <span class="font-normal text-gray-400">(Untuk AI Recommendation)</span>
+                    </h3>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {{-- Sweetness --}}
+                        <div>
+                            <label for="sweetness" class="block text-xs font-medium text-gray-500 mb-2">
+                                Tingkat Manis
+                            </label>
+                            <select id="sweetness" name="sweetness"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-brew-gold focus:ring-2 focus:ring-brew-gold/20 outline-none transition-all text-sm">
+                                <option value="low"
+                                    {{ old('sweetness', $flavorProfile['sweetness'] ?? '') === 'low' ? 'selected' : '' }}>
+                                    Rendah</option>
+                                <option value="medium"
+                                    {{ old('sweetness', $flavorProfile['sweetness'] ?? 'medium') === 'medium' ? 'selected' : '' }}>
+                                    Sedang</option>
+                                <option value="high"
+                                    {{ old('sweetness', $flavorProfile['sweetness'] ?? '') === 'high' ? 'selected' : '' }}>
+                                    Tinggi</option>
+                            </select>
+                        </div>
+
+                        {{-- Bitterness --}}
+                        <div>
+                            <label for="bitterness" class="block text-xs font-medium text-gray-500 mb-2">
+                                Tingkat Pahit
+                            </label>
+                            <select id="bitterness" name="bitterness"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-brew-gold focus:ring-2 focus:ring-brew-gold/20 outline-none transition-all text-sm">
+                                <option value="low"
+                                    {{ old('bitterness', $flavorProfile['bitterness'] ?? '') === 'low' ? 'selected' : '' }}>
+                                    Rendah</option>
+                                <option value="medium"
+                                    {{ old('bitterness', $flavorProfile['bitterness'] ?? 'medium') === 'medium' ? 'selected' : '' }}>
+                                    Sedang</option>
+                                <option value="high"
+                                    {{ old('bitterness', $flavorProfile['bitterness'] ?? '') === 'high' ? 'selected' : '' }}>
+                                    Tinggi</option>
+                            </select>
+                        </div>
+
+                        {{-- Strength --}}
+                        <div>
+                            <label for="strength" class="block text-xs font-medium text-gray-500 mb-2">
+                                Kekuatan Rasa
+                            </label>
+                            <select id="strength" name="strength"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-brew-gold focus:ring-2 focus:ring-brew-gold/20 outline-none transition-all text-sm">
+                                <option value="light"
+                                    {{ old('strength', $flavorProfile['strength'] ?? '') === 'light' ? 'selected' : '' }}>
+                                    Ringan</option>
+                                <option value="medium"
+                                    {{ old('strength', $flavorProfile['strength'] ?? 'medium') === 'medium' ? 'selected' : '' }}>
+                                    Sedang</option>
+                                <option value="strong"
+                                    {{ old('strength', $flavorProfile['strength'] ?? '') === 'strong' ? 'selected' : '' }}>
+                                    Kuat</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {{-- Flavor Notes --}}
+                    <div class="mt-4">
+                        <label for="flavor_notes" class="block text-xs font-medium text-gray-500 mb-2">
+                            Catatan Rasa <span class="text-gray-400">(pisahkan dengan koma)</span>
+                        </label>
+                        <input type="text" id="flavor_notes" name="flavor_notes"
+                            value="{{ old('flavor_notes', is_array($flavorProfile['notes'] ?? null) ? implode(', ', $flavorProfile['notes']) : '') }}"
+                            class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-brew-gold focus:ring-2 focus:ring-brew-gold/20 outline-none transition-all text-sm"
+                            placeholder="caramel, vanilla, chocolate">
+                    </div>
                 </div>
 
                 {{-- Submit --}}

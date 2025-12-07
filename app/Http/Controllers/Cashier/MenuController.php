@@ -60,25 +60,26 @@ class MenuController extends Controller
      * Store new menu item ke database
      */
     public function store(MenuItemRequest $request): RedirectResponse
-{
-    $data = $request->validated();
+    {
+        $data = $request->validated();
 
-    if ($request->hasFile('image')) {
-        $data['image_path'] = $request->file('image')->store('menu-items', 'public');
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('menu-items', 'public');
+        }
+
+        $result = $this->menuService->createMenuItem($data);
+
+        if (!$result['success']) {
+            return back()
+                ->withInput()
+                ->withErrors(['name' => $result['message']]);
+        }
+
+        return redirect()
+            ->route('cashier.menu.index')
+            ->with('success', $result['message']);
     }
-
-    $result = $this->menuService->createMenuItem($data);
-
-    if (!$result['success']) {
-        return back()
-            ->withInput()
-            ->withErrors(['name' => $result['message']]);
-    }
-
-    return redirect()
-        ->route('cashier.menu.index')
-        ->with('success', $result['message']);
-}
 
 
     /**
@@ -102,7 +103,19 @@ class MenuController extends Controller
      */
     public function update(MenuItemRequest $request, int $menu): RedirectResponse
     {
-        $result = $this->menuService->updateMenuItem($menu, $request->validated());
+        $data = $request->validated();
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $menuItem = $this->menuService->getMenuItemById($menu);
+            // Delete old image if exists
+            if ($menuItem && $menuItem->image_path && \Storage::disk('public')->exists($menuItem->image_path)) {
+                \Storage::disk('public')->delete($menuItem->image_path);
+            }
+            $data['image_path'] = $request->file('image')->store('menu-items', 'public');
+        }
+
+        $result = $this->menuService->updateMenuItem($menu, $data);
 
         if (!$result['success']) {
             return back()

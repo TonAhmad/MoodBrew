@@ -90,8 +90,8 @@
                                 <tr class="hover:bg-gray-50">
                                     <td class="py-4 px-6">
                                         <div class="flex items-center space-x-4">
-                                            @if ($item->image)
-                                                <img src="{{ asset('storage/' . $item->image) }}"
+                                            @if ($item->image_path)
+                                                <img src="{{ asset('storage/' . $item->image_path) }}"
                                                     alt="{{ $item->name }}"
                                                     class="w-12 h-12 object-cover rounded-lg">
                                             @else

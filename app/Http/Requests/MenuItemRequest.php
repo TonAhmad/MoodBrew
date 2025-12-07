@@ -39,6 +39,7 @@ class MenuItemRequest extends FormRequest
                     MenuItem::CATEGORY_MAIN_COURSE,
                 ]),
             ],
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png', 'max:2048'],
             'stock_quantity' => ['nullable', 'integer', 'min:0'],
             'is_available' => ['nullable', 'boolean'],
             // Flavor profile fields
@@ -64,6 +65,9 @@ class MenuItemRequest extends FormRequest
             'price.min' => 'Harga tidak boleh negatif.',
             'category.required' => 'Kategori wajib dipilih.',
             'category.in' => 'Kategori tidak valid.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus: JPEG, JPG, atau PNG.',
+            'image.max' => 'Ukuran gambar maksimal 2MB.',
             'stock_quantity.integer' => 'Stok harus berupa angka bulat.',
             'stock_quantity.min' => 'Stok tidak boleh negatif.',
         ];

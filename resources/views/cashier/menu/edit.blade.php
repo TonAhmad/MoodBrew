@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('cashier.menu.update', $menuItem->id) }}" class="p-6 space-y-5">
+            <form method="POST" action="{{ route('cashier.menu.update', $menuItem->id) }}" enctype="multipart/form-data" class="p-6 space-y-5">
                 @csrf
                 @method('PUT')
 
@@ -128,17 +128,33 @@
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
-                {{-- Image --}}
+                {{-- Current Image Preview --}}
+                @if($menuItem->image_path)
                 <div>
-                <label for="image" class="block text-sm font-medium text-gray-700 mb-2"> Gambar Menu </label>
-                <input type="file"id="image" name="image" accept="image/*" class="w-full px-4 py-3 rounded-lg border border-gray-200
-                 focus:border-brew-gold focus:ring-2 focus:ring-brew-gold/20
-                outline-none transition-all @error('image') border-red-500 @enderror">
-                <p class="mt-1 text-xs text-gray-400">
-                Format: JPG, PNG. Maks 2MB. </p>
-                @error('image')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Saat Ini</label>
+                    <div class="flex items-start space-x-4">
+                        <img src="{{ asset('storage/' . $menuItem->image_path) }}" alt="{{ $menuItem->name }}" 
+                             class="w-32 h-32 object-cover rounded-lg border-2 border-gray-200">
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-500">Upload gambar baru untuk mengganti</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                {{-- Image Upload --}}
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ $menuItem->image_path ? 'Ganti Gambar Menu' : 'Gambar Menu' }}
+                    </label>
+                    <input type="file" id="image" name="image" accept="image/*" 
+                           class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brew-gold focus:ring-2 focus:ring-brew-gold/20 outline-none transition-all @error('image') border-red-500 @enderror">
+                    <p class="mt-1 text-xs text-gray-400">
+                        Format: JPG, PNG, JPEG. Maksimal 2MB. {{ $menuItem->image_path ? 'Biarkan kosong jika tidak ingin mengganti.' : '' }}
+                    </p>
+                    @error('image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
                 {{-- Stock & Availability --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">

@@ -68,7 +68,7 @@ class MenuController extends Controller
     {
         $data = $request->validated();
 
-        // simpan file gambar jika ada
+        // Handle image upload
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('menu-items', 'public');
         }
@@ -98,7 +98,12 @@ class MenuController extends Controller
     {
         $data = $request->validated();
 
+        // Handle image upload
         if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($menu->image_path && \Storage::disk('public')->exists($menu->image_path)) {
+                \Storage::disk('public')->delete($menu->image_path);
+            }
             $data['image_path'] = $request->file('image')->store('menu-items', 'public');
         }
 
