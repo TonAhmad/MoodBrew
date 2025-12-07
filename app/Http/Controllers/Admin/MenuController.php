@@ -10,10 +10,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-/**
- * MenuController - Handle menu management untuk admin
- * Admin bisa melihat dan manage semua menu items
- */
 class MenuController extends Controller
 {
     protected MenuService $menuService;
@@ -59,8 +55,8 @@ class MenuController extends Controller
      */
     public function create(): View
     {
-        // pakai helper dari model
-        $categories = MenuItem::getCategories();
+        // pakai mapping key => label dari service (sama seperti kasir)
+        $categories = $this->menuService->getCategories();
 
         return view('admin.menu.create', compact('categories'));
     }
@@ -70,28 +66,27 @@ class MenuController extends Controller
      */
     public function store(MenuItemRequest $request): RedirectResponse
     {
-    $data = $request->validated();
+        $data = $request->validated();
 
-    // simpan file gambar jika ada
-    if ($request->hasFile('image')) {
-        $data['image_path'] = $request->file('image')->store('menu-items', 'public');
+        // simpan file gambar jika ada
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('menu-items', 'public');
+        }
+
+        $this->menuService->createMenuItem($data);
+
+        return redirect()
+            ->route('admin.menu.index')
+            ->with('success', 'Menu item berhasil ditambahkan!');
     }
-
-    $this->menuService->createMenuItem($data);
-
-    return redirect()
-        ->route('admin.menu.index')
-        ->with('success', 'Menu item berhasil ditambahkan!');
-    }
-
 
     /**
      * Show form for editing menu item
      */
     public function edit(MenuItem $menu): View
     {
-        // sama: pakai getCategories()
-        $categories = MenuItem::getCategories();
+        // sama: pakai mapping service
+        $categories = $this->menuService->getCategories();
 
         return view('admin.menu.edit', compact('menu', 'categories'));
     }
@@ -101,27 +96,24 @@ class MenuController extends Controller
      */
     public function update(MenuItemRequest $request, MenuItem $menu): RedirectResponse
     {
-    $data = $request->validated();
+        $data = $request->validated();
 
-    // kalau upload gambar baru, simpan dan override image_path
-    if ($request->hasFile('image')) {
-        $data['image_path'] = $request->file('image')->store('menu-items', 'public');
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('menu-items', 'public');
+        }
+
+        $this->menuService->updateMenuItem($menu->id, $data);
+
+        return redirect()
+            ->route('admin.menu.index')
+            ->with('success', 'Menu item berhasil diperbarui!');
     }
-
-    $this->menuService->updateMenuItem($menu->id, $data);
-
-    return redirect()
-        ->route('admin.menu.index')
-        ->with('success', 'Menu item berhasil diperbarui!');
-    }
-
 
     /**
      * Delete menu item
      */
     public function destroy(MenuItem $menu): RedirectResponse
     {
-        // kirim ID, bukan object
         $this->menuService->deleteMenuItem($menu->id);
 
         return redirect()

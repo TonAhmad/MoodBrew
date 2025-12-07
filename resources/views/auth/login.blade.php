@@ -53,14 +53,21 @@
                             placeholder="••••••••">
                     </div>
 
-                    {{-- Remember Me --}}
-                    <div class="flex items-center">
-                        <input type="checkbox" id="remember" name="remember"
-                            class="w-4 h-4 text-brew-gold border-gray-300 rounded focus:ring-brew-gold">
-                        <label for="remember" class="ml-2 text-sm text-gray-600">
-                            Ingat saya
-                        </label>
-                    </div>
+{{-- Remember Me --}}
+<div class="flex items-center">
+    <input
+        type="checkbox"
+        id="remember"
+        name="remember"
+        value="1"                             
+        class="w-4 h-4 text-brew-gold border-gray-300 rounded focus:ring-brew-gold"
+        {{ old('remember') ? 'checked' : '' }} {{-- biar tetap ke-cek kalau validasi gagal --}}
+    >
+    <label for="remember" class="ml-2 text-sm text-gray-600">
+        Ingat saya
+    </label>
+</div>
+
 
                     {{-- Submit Button --}}
                     <button type="submit"

@@ -60,19 +60,26 @@ class MenuController extends Controller
      * Store new menu item ke database
      */
     public function store(MenuItemRequest $request): RedirectResponse
-    {
-        $result = $this->menuService->createMenuItem($request->validated());
+{
+    $data = $request->validated();
 
-        if (!$result['success']) {
-            return back()
-                ->withInput()
-                ->withErrors(['name' => $result['message']]);
-        }
-
-        return redirect()
-            ->route('cashier.menu.index')
-            ->with('success', $result['message']);
+    if ($request->hasFile('image')) {
+        $data['image_path'] = $request->file('image')->store('menu-items', 'public');
     }
+
+    $result = $this->menuService->createMenuItem($data);
+
+    if (!$result['success']) {
+        return back()
+            ->withInput()
+            ->withErrors(['name' => $result['message']]);
+    }
+
+    return redirect()
+        ->route('cashier.menu.index')
+        ->with('success', $result['message']);
+}
+
 
     /**
      * Show form untuk edit menu item

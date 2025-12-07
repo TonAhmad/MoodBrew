@@ -109,7 +109,7 @@
                     &copy; {{ date('Y') }} MoodBrew. All rights reserved.
                 </p>
                 <p class="text-brew-cream/50 text-sm">
-                    Made with ☕ and AI
+                    Made From Collaboration Aidan x Fathon
                 </p>
             </div>
         </div>
