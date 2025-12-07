@@ -30,14 +30,14 @@ class SalesReportService
         $totalOrders = $orders->count();
         $avgOrderValue = $totalOrders > 0 ? $totalRevenue / $totalOrders : 0;
 
-        // Best selling items
-        $bestSellers = $this->getBestSellingItems($targetDate, $targetDate);
+        // Best selling items - use startOfDay/endOfDay for whereBetween to work
+        $bestSellers = $this->getBestSellingItems($targetDate->copy()->startOfDay(), $targetDate->copy()->endOfDay());
 
         // Hourly breakdown
         $hourlyBreakdown = $this->getHourlyBreakdown($targetDate);
 
-        // Revenue by category
-        $revenueByCategory = $this->getRevenueByCategory($targetDate, $targetDate);
+        // Revenue by category - use startOfDay/endOfDay for whereBetween to work
+        $revenueByCategory = $this->getRevenueByCategory($targetDate->copy()->startOfDay(), $targetDate->copy()->endOfDay());
 
         // Payment method breakdown
         $paymentMethods = Order::whereDate('created_at', $targetDate)

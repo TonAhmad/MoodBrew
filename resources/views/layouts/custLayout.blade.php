@@ -47,9 +47,7 @@
     <header class="bg-white shadow-sm sticky top-0 z-50 lg:hidden">
         <div class="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
             <a href="{{ route('landing.home') }}" class="flex items-center space-x-2">
-                <div class="w-8 h-8 bg-brew-brown rounded-full flex items-center justify-center">
-                    <span class="text-brew-cream font-display font-bold">M</span>
-                </div>
+                <img src="{{ asset('assets/moodbrew.png') }}" alt="MoodBrew Logo" class="w-8 h-8 rounded-full object-cover">
                 <span class="font-display font-bold text-brew-dark">MoodBrew</span>
             </a>
 
@@ -81,9 +79,7 @@
             <div class="flex items-center justify-between h-16">
                 {{-- Logo --}}
                 <a href="{{ route('landing.home') }}" class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-brew-brown rounded-full flex items-center justify-center">
-                        <span class="text-brew-cream font-bold text-lg">M</span>
-                    </div>
+                    <img src="{{ asset('assets/moodbrew.png') }}" alt="MoodBrew Logo" class="w-10 h-10 rounded-full object-cover">
                     <span class="font-bold text-xl text-brew-dark">MoodBrew</span>
                 </a>
 

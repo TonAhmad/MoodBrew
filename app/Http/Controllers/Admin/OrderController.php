@@ -84,7 +84,6 @@ class OrderController extends Controller
         $request->validate([
             'status' => 'required|in:' . implode(',', [
                 Order::STATUS_PENDING_PAYMENT,
-                Order::STATUS_PAID,
                 Order::STATUS_PREPARING,
                 Order::STATUS_READY,
                 Order::STATUS_COMPLETED,

@@ -191,6 +191,7 @@ class OrderService
             'amount_paid' => $amountPaid,
             'change_amount' => max(0, $changeAmount),
             'paid_at' => now(),
+            'cashier_id' => auth()->id(), // Track who processed the payment
         ]);
 
         return $order->fresh();

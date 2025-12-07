@@ -62,7 +62,6 @@
                             class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brew-gold focus:border-brew-gold">
                             <option value="pending_payment" {{ $order->status === 'pending_payment' ? 'selected' : '' }}>
                                 Pending Payment</option>
-                            <option value="paid" {{ $order->status === 'paid' ? 'selected' : '' }}>Paid</option>
                             <option value="preparing" {{ $order->status === 'preparing' ? 'selected' : '' }}>Preparing
                             </option>
                             <option value="ready" {{ $order->status === 'ready' ? 'selected' : '' }}>Ready</option>
@@ -99,7 +98,7 @@
                                         <p class="font-medium text-brew-dark">{{ $item->menuItem?->name ?? 'Deleted Item' }}
                                         </p>
                                         <p class="text-sm text-gray-500">
-                                            Rp {{ number_format($item->unit_price, 0, ',', '.') }} × {{ $item->quantity }}
+                                            Rp {{ number_format($item->price_at_moment, 0, ',', '.') }} × {{ $item->quantity }}
                                         </p>
                                         @if ($item->notes)
                                             <p class="text-sm text-gray-400 mt-1">{{ $item->notes }}</p>
@@ -107,7 +106,7 @@
                                     </div>
                                 </div>
                                 <p class="font-semibold text-brew-dark">
-                                    Rp {{ number_format($item->subtotal, 0, ',', '.') }}
+                                    Rp {{ number_format($item->price_at_moment * $item->quantity, 0, ',', '.') }}
                                 </p>
                             </div>
                         @endforeach

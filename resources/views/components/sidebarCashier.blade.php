@@ -12,9 +12,7 @@
         {{-- Logo --}}
         <div class="flex items-center justify-center h-16 border-b border-brew-brown/30">
             <a href="{{ route('cashier.dashboard') }}" class="flex items-center space-x-2">
-                <div class="w-10 h-10 bg-brew-gold rounded-full flex items-center justify-center flex-shrink-0">
-                    <span class="text-brew-dark font-display font-bold text-lg">M</span>
-                </div>
+                <img src="{{ asset('assets/moodbrew.png') }}" alt="MoodBrew Logo" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
                 <span x-show="sidebarOpen" x-cloak class="font-display text-xl font-bold text-brew-cream">
                     MoodBrew
                 </span>
@@ -52,9 +50,7 @@
         {{-- Logo & Close Button --}}
         <div class="flex items-center justify-between h-16 px-4 border-b border-brew-brown/30">
             <a href="{{ route('cashier.dashboard') }}" class="flex items-center space-x-2">
-                <div class="w-10 h-10 bg-brew-gold rounded-full flex items-center justify-center flex-shrink-0">
-                    <span class="text-brew-dark font-display font-bold text-lg">M</span>
-                </div>
+                <img src="{{ asset('assets/moodbrew.png') }}" alt="MoodBrew Logo" class="w-10 h-10 rounded-full object-cover flex-shrink-0">
                 <span class="font-display text-xl font-bold text-brew-cream">MoodBrew</span>
             </a>
             <button @click="mobileMenuOpen = false" class="p-2 text-brew-cream hover:bg-brew-brown/50 rounded-lg">
