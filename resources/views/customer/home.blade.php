@@ -147,9 +147,8 @@
                                         class="flex-1 px-4 py-3 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-brew-gold/50 text-sm lg:text-base">
                                     <button type="submit" :disabled="loading || !userInput.trim()"
                                         class="w-12 h-12 bg-brew-gold rounded-full flex items-center justify-center text-brew-dark hover:bg-yellow-400 transition-colors disabled:opacity-50 flex-shrink-0">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3 21l18-9L3 3l3 9m0 0h9"/>
                                         </svg>
                                     </button>
                                 </form>
@@ -362,8 +361,16 @@ function aiChat() {
         
         formatAiResponse(text) {
             // Format response untuk lebih readable
-            // Replace newlines dengan <br> untuk HTML
-            return text.replace(/\n/g, '<br>');
+            // 1. Convert **bold** markdown ke <strong>
+            text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            
+            // 2. Convert *italic* markdown ke <em>
+            text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            
+            // 3. Replace newlines dengan <br> untuk HTML
+            text = text.replace(/\n/g, '<br>');
+            
+            return text;
         },
         
         async addToCart(itemId) {

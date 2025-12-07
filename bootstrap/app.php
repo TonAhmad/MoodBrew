@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CustomerSessionMiddleware;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register custom middleware alias
         $middleware->alias([
             'role' => RoleMiddleware::class,
+            'customer.session' => CustomerSessionMiddleware::class,
         ]);
 
         // Redirect paths untuk authenticated users

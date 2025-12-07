@@ -1,0 +1,92 @@
+name: Deploy MoodBrew to Hostinger
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Checkout code dari repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # 2. Setup PHP environment
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, json, curl, openssl, pdo, mysql, bcmath
+          coverage: none
+      
+      # 3. Cache Composer dependencies
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+      
+      # 4. Install Composer dependencies (production only)
+      - name: Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+      
+      # 5. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      # 6. Install NPM dependencies
+      - name: Install NPM dependencies
+        run: npm ci
+      
+      # 7. Build frontend assets
+      - name: Build assets
+        run: npm run build
+      
+      # 8. Prepare deployment (remove unnecessary files)
+      - name: Prepare deployment
+        run: |
+          rm -rf node_modules
+          rm -rf tests
+          rm -rf .git
+          rm -rf .github
+          rm -f .gitignore
+          rm -f .gitattributes
+          rm -f phpunit.xml
+          rm -f vite.config.js
+          rm -f package.json
+          rm -f package-lock.json
+          rm -f composer.lock
+      
+      # 9. Deploy ke Hostinger via FTP
+      - name: Deploy to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/tests/**
+            **/.env
+            **/.env.example
+            **/storage/logs/**
+            **/storage/framework/cache/data/**
+            **/storage/framework/sessions/**
+            **/storage/framework/views/**
+            **/storage/app/public/**
+            **/.editorconfig
+            **/.styleci.yml
+            **/phpunit.xml
+            **/README.md

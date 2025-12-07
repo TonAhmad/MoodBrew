@@ -1,106 +1,191 @@
-# ☕ MoodBrew - Coffee That Understands You
+# MoodBrew - Coffee That Understands You
 
-**MoodBrew** adalah sistem cafe management berbasis AI yang memberikan pengalaman personal kepada pelanggan melalui deteksi mood dan rekomendasi minuman yang tepat. Dikembangkan untuk [Nama Hackathon] dengan fokus pada innovation dan user experience.
+MoodBrew adalah sistem manajemen cafe berbasis AI yang memberikan pengalaman personal kepada pelanggan melalui deteksi mood dan rekomendasi minuman yang tepat.
 
-![MoodBrew Banner](https://via.placeholder.com/1200x400/8B4513/FFFFFF?text=MoodBrew+-+AI+Powered+Coffee+Experience)
+---
 
-## 🎯 Problem & Solution
+## DAFTAR ISI
 
-### Problem
-- Pelanggan sering kesulitan memilih menu yang sesuai dengan mood mereka
-- Cafe kehilangan kesempatan untuk memberikan layanan yang lebih personal
-- Customer service tidak bisa mengetahui kondisi emosional pelanggan secara real-time
+1. Tentang MoodBrew
+2. Fitur Utama
+3. Teknologi yang Digunakan
+4. Persyaratan Sistem
+5. Instalasi
+6. Konfigurasi Environment (.env)
+7. Integrasi AI (Kolosal AI)
+8. Menjalankan Aplikasi
+9. Panduan Penggunaan
+10. Struktur Project
+11. Akun Default
+12. Troubleshooting
 
-### Solution
-MoodBrew menggunakan **AI (Kolosal AI)** untuk:
-1. **Mood Detection** - Menganalisis text input pelanggan untuk mendeteksi mood (8 kategori: Happy, Relaxed, Energetic, Tired, Stressed, Loved, Thoughtful, Coffee Time)
-2. **Smart Recommendation** - Memberikan rekomendasi menu berdasarkan mood dan flavor profile
-3. **Empathy Radar** - Dashboard untuk cashier/barista melihat mood summary pelanggan
-4. **Silent Social Wall** - Platform untuk pelanggan berbagi vibe secara anonim dengan sentiment analysis
-5. **AI Flash Sale** - Generate copywriting promo secara otomatis
+---
 
-## ✨ Key Features
+## 1. TENTANG MOODBREW
 
-### 🤖 AI-Powered Features
-- **Mood-Based Recommendation** - AI menganalisis mood dan merekomendasikan menu yang cocok
-- **Sentiment Analysis** - Klasifikasi otomatis vibe/mood pelanggan menjadi 8 kategori spesifik
-- **AI Copywriting** - Generate flash sale copy secara otomatis dengan prompting yang teroptimasi
-- **Empathy Radar** - Real-time mood dashboard untuk staff
+MoodBrew adalah aplikasi cafe management yang mengintegrasikan AI untuk:
 
-### 📱 Customer Features
-- **Quick Access Login** - Masuk tanpa password (hanya nama + email)
-- **AI Chat Interface** - Ngobrol dengan AI untuk mendapat rekomendasi
-- **Public Menu & Vibe Wall** - Lihat menu dan vibe wall tanpa login
-- **Cart & Checkout** - Keranjang belanja dengan flash sale integration
-- **Table-Based Ordering** - Scan QR code di meja untuk langsung order
+- Mendeteksi mood pelanggan dari input text
+- Memberikan rekomendasi minuman berdasarkan mood
+- Menyediakan "Silent Social Wall" untuk berbagi vibe secara anonim
+- Membantu staff memahami kondisi emosional pelanggan (Empathy Radar)
+- Generate copywriting flash sale secara otomatis
 
-### 💼 Staff Features (Admin & Cashier)
-- **Empathy Radar Dashboard** - Lihat mood pelanggan sebelum deliver order
-- **Flash Sale Management** - Buat flash sale dengan AI-generated copy
-- **Order Management** - Track status: pending → preparing → completed
-- **Vibe Wall Moderation** - Approve/reject vibe entries
-- **Sales Reports** - Daily/Monthly analytics
+### Masalah yang Diselesaikan
 
-## 🏗️ Tech Stack
+1. Pelanggan sering kesulitan memilih menu yang sesuai dengan mood mereka
+2. Cafe kehilangan kesempatan untuk memberikan layanan yang lebih personal
+3. Customer service tidak bisa mengetahui kondisi emosional pelanggan secara real-time
+
+### Solusi
+
+1. AI Chat yang bisa menganalisis mood dan memberikan rekomendasi menu
+2. 8 kategori mood spesifik: Happy, Relaxed, Energetic, Tired, Stressed, Loved, Thoughtful, Coffee Time
+3. Empathy Radar untuk staff melihat mood pelanggan sebelum melayani
+4. Silent Social Wall untuk pelanggan berbagi perasaan secara anonim
+
+---
+
+## 2. FITUR UTAMA
+
+### Fitur AI
+
+1. Mood-Based Recommendation - AI menganalisis mood dan merekomendasikan menu yang cocok
+2. Sentiment Analysis - Klasifikasi otomatis mood pelanggan menjadi 8 kategori
+3. AI Copywriting - Generate flash sale copy secara otomatis
+4. AI Chat Interface - Percakapan interaktif dengan AI untuk mendapat rekomendasi
+
+### Fitur Customer
+
+1. Quick Access Login - Masuk tanpa password (hanya nama dan email)
+2. AI Chat - Ngobrol dengan AI untuk mendapat rekomendasi minuman
+3. Public Menu - Lihat menu tanpa perlu login
+4. Public Vibe Wall - Lihat vibe wall tanpa login
+5. Cart dan Checkout - Keranjang belanja dengan integrasi flash sale
+6. Table-Based Ordering - Scan QR code di meja untuk langsung order
+
+### Fitur Admin
+
+1. Dashboard Analytics - Statistik penjualan dan performa
+2. Staff Management - CRUD data staff (kasir)
+3. Menu Management - CRUD data menu dengan flavor profile
+4. Order Management - Monitor semua pesanan
+5. Vibe Wall Moderation - Approve/reject vibe entries
+6. Sales Reports - Laporan harian dan bulanan
+
+### Fitur Cashier
+
+1. Empathy Radar Dashboard - Lihat mood pelanggan sebelum deliver order
+2. Flash Sale Management - Buat flash sale dengan AI-generated copy
+3. Order Processing - Proses pesanan (pending, preparing, completed)
+4. Payment Processing - Cash, QRIS, Debit
+
+---
+
+## 3. TEKNOLOGI YANG DIGUNAKAN
 
 ### Backend
-- **Laravel 12** - Clean architecture dengan service layer pattern
-- **PHP 8.2+** - Modern PHP with type hints
-- **MySQL** - Relational database
-- **Kolosal AI** - AI/ML integration untuk recommendation & sentiment analysis
+- Laravel 12
+- PHP 8.2+
+- MySQL/MariaDB
 
 ### Frontend
-- **Alpine.js** - Reactive components tanpa build step
-- **Tailwind CSS** - Utility-first styling
-- **Blade Templates** - Server-side rendering
+- Alpine.js (reactive components)
+- Tailwind CSS (styling)
+- Blade Templates (server-side rendering)
 
-### Architecture
-```
-app/
-├── Http/
-│   ├── Controllers/        # Thin controllers (hanya routing)
-│   │   ├── Admin/
-│   │   ├── Cashier/
-│   │   ├── Customer/
-│   │   └── LandingController.php
-│   └── Requests/          # Form validation
-├── Services/              # Business logic layer
-│   ├── AI/               # AI services (Recommendation, Sentiment, Chat, Copywriting)
-│   ├── AuthService.php
-│   ├── OrderService.php
-│   └── ...
-└── Models/               # Eloquent models
-```
+### AI Integration
+- Kolosal AI API (OpenAI-compatible format)
 
-## 🚀 Installation
+---
 
-### Prerequisites
-- PHP >= 8.2
-- Composer
-- MySQL/MariaDB
-- Node.js & NPM (untuk assets compilation)
+## 4. PERSYARATAN SISTEM
 
-### Step-by-Step
+1. PHP >= 8.2
+2. Composer
+3. MySQL atau MariaDB
+4. Node.js dan NPM
+5. Git
 
-1. **Clone Repository**
+---
+
+## 5. INSTALASI
+
+### 5.1 Clone Repository
+
 ```bash
-git clone https://github.com/[your-username]/moodbrew.git
-cd moodbrew
+git clone https://github.com/TonAhmad/MoodBrew.git
+cd MoodBrew
 ```
 
-2. **Install Dependencies**
+### 5.2 Install PHP Dependencies
+
 ```bash
 composer install
+```
+
+### 5.3 Install Node Dependencies
+
+```bash
 npm install
 ```
 
-3. **Environment Setup**
+### 5.4 Copy Environment File
+
 ```bash
 cp .env.example .env
+```
+
+### 5.5 Generate Application Key
+
+```bash
 php artisan key:generate
 ```
 
-4. **Configure Database** (edit `.env`)
+### 5.6 Buat Database
+
+Buat database baru di MySQL dengan nama `moodbrew`:
+
+```sql
+CREATE DATABASE moodbrew;
+```
+
+### 5.7 Jalankan Migration dan Seeder
+
+```bash
+php artisan migrate --seed
+```
+
+### 5.8 Build Assets
+
+```bash
+npm run build
+```
+
+Atau untuk development dengan hot reload:
+
+```bash
+npm run dev
+```
+
+---
+
+## 6. KONFIGURASI ENVIRONMENT (.env)
+
+Buka file `.env` dan sesuaikan konfigurasi berikut:
+
+### 6.1 Konfigurasi Aplikasi
+
+```env
+APP_NAME=MoodBrew
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+APP_TIMEZONE=Asia/Jakarta
+```
+
+### 6.2 Konfigurasi Database
+
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -110,178 +195,466 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-5. **Configure AI Service** (edit `.env`)
+Sesuaikan `DB_USERNAME` dan `DB_PASSWORD` dengan kredensial MySQL Anda.
+
+### 6.3 Konfigurasi Session
+
 ```env
-KOLOSAL_API_KEY=your_kolosal_api_key_here
-KOLOSAL_API_URL=https://api.kolosal.com
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
 ```
 
-6. **Run Migrations & Seeders**
-```bash
-php artisan migrate --seed
+### 6.4 Konfigurasi AI (Kolosal AI)
+
+```env
+AI_PROVIDER=kolosal
+AI_API_KEY=your-kolosal-api-key-here
+AI_API_URL=https://api.kolosal.ai/v1
+AI_MODEL="Claude Sonnet 4.5"
+AI_TEMPERATURE=0.7
+AI_MAX_TOKENS=1000
+AI_ENABLED=true
+AI_FALLBACK_ENABLED=true
 ```
 
-7. **Build Assets**
-```bash
-npm run build
-# atau untuk development:
-npm run dev
+PENTING:
+- `AI_API_KEY`: Dapatkan dari https://kolosal.ai setelah registrasi
+- `AI_MODEL`: Gunakan tanda kutip jika nama model mengandung spasi
+- `AI_ENABLED`: Set `true` untuk mengaktifkan fitur AI, `false` untuk menonaktifkan
+
+### 6.5 Contoh .env Lengkap
+
+```env
+APP_NAME=MoodBrew
+APP_ENV=local
+APP_KEY=base64:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+APP_TIMEZONE=Asia/Jakarta
+
+APP_LOCALE=en
+APP_FALLBACK_LOCALE=en
+APP_FAKER_LOCALE=en_US
+
+APP_MAINTENANCE_DRIVER=file
+
+BCRYPT_ROUNDS=12
+
+LOG_CHANNEL=stack
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=moodbrew
+DB_USERNAME=root
+DB_PASSWORD=
+
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=null
+
+BROADCAST_CONNECTION=log
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=database
+
+CACHE_STORE=database
+
+MAIL_MAILER=log
+MAIL_HOST=127.0.0.1
+MAIL_PORT=2525
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_FROM_ADDRESS="hello@moodbrew.com"
+MAIL_FROM_NAME="${APP_NAME}"
+
+AI_PROVIDER=kolosal
+AI_API_KEY=your-kolosal-api-key-here
+AI_API_URL=https://api.kolosal.ai/v1
+AI_MODEL="Claude Sonnet 4.5"
+AI_TEMPERATURE=0.7
+AI_MAX_TOKENS=1000
+AI_ENABLED=true
+AI_FALLBACK_ENABLED=true
+
+VITE_APP_NAME="${APP_NAME}"
 ```
 
-8. **Start Development Server**
+---
+
+## 7. INTEGRASI AI (KOLOSAL AI)
+
+### 7.1 Mendapatkan API Key
+
+1. Kunjungi https://kolosal.ai
+2. Daftar atau login ke akun Anda
+3. Buka menu API Keys atau Dashboard
+4. Buat API Key baru
+5. Copy API Key yang diberikan
+
+### 7.2 Memasukkan API Key ke .env
+
+Buka file `.env` dan masukkan API Key:
+
+```env
+AI_API_KEY=kol_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+### 7.3 Memilih Model AI
+
+Kolosal AI menyediakan beberapa model. Untuk menggunakan model tertentu, ubah nilai `AI_MODEL`:
+
+```env
+AI_MODEL="Claude Sonnet 4.5"
+```
+
+Model lain yang tersedia:
+- meta-llama/llama-4-maverick-17b-128e-instruct
+- Dan model lain yang tersedia di Kolosal AI
+
+CATATAN: Jika nama model mengandung spasi, gunakan tanda kutip.
+
+### 7.4 Mengatur Parameter AI
+
+1. `AI_TEMPERATURE`: Nilai 0.0 - 1.0. Semakin tinggi, respons AI semakin kreatif/random
+2. `AI_MAX_TOKENS`: Maksimum panjang respons AI (1000 sudah cukup untuk chat)
+3. `AI_ENABLED`: Set `true` untuk mengaktifkan, `false` untuk menonaktifkan
+
+### 7.5 Verifikasi Integrasi
+
+Setelah konfigurasi, jalankan aplikasi dan akses halaman Customer. Jika AI aktif, Anda akan melihat chat interface. Jika AI tidak aktif atau API Key salah, akan muncul banner "AI Sedang Maintenance".
+
+---
+
+## 8. MENJALANKAN APLIKASI
+
+### 8.1 Development Server
+
 ```bash
 php artisan serve
 ```
 
-9. **Access Application**
-- Landing Page: http://127.0.0.1:8000
-- Customer Login: http://127.0.0.1:8000/login
-- Staff Login: http://127.0.0.1:8000/staff/login
+Aplikasi akan berjalan di http://127.0.0.1:8000
 
-### Default Credentials
+### 8.2 Menjalankan Vite (untuk development)
 
-**Admin:**
-- Email: `admin@moodbrew.com`
-- Password: `password`
-
-**Cashier:**
-- Email: `cashier@moodbrew.com`
-- Password: `password`
-
-## 📸 Screenshots
-
-### Landing Page
-![Landing Page](https://via.placeholder.com/800x450/8B4513/FFFFFF?text=Landing+Page)
-
-### AI Chat Interface (Customer)
-![AI Chat](https://via.placeholder.com/800x450/8B4513/FFFFFF?text=AI+Chat+Interface)
-
-### Empathy Radar Dashboard (Cashier)
-![Empathy Radar](https://via.placeholder.com/800x450/8B4513/FFFFFF?text=Empathy+Radar)
-
-### Silent Social Wall
-![Vibe Wall](https://via.placeholder.com/800x450/8B4513/FFFFFF?text=Silent+Social+Wall)
-
-## 🎮 Usage Guide
-
-### For Customers
-
-1. **Quick Start**
-   - Kunjungi homepage
-   - Klik "Mulai Pesan"
-   - Isi nama & email (tanpa password!)
-
-2. **Get Recommendation**
-   - Chat dengan AI: "Lagi stress nih, rekomendasiin dong"
-   - AI akan menganalisis mood dan memberikan rekomendasi
-
-3. **Order & Checkout**
-   - Tambahkan item ke cart
-   - Checkout dan pilih nomor meja
-   - Bayar di kasir saat pesanan siap
-
-4. **Share Your Vibe**
-   - Kunjungi Vibe Wall
-   - Tulis mood/vibe kamu hari ini
-   - Pilih anonymous atau tampilkan nama
-   - AI akan mengklasifikasikan mood kamu
-
-### For Staff
-
-1. **Login**
-   - Akses `/staff/login`
-   - Login dengan email & password
-
-2. **Admin - Manage Flash Sale**
-   - Buat flash sale baru
-   - Pilih menu & discount
-   - Klik "Generate AI Copy" untuk copywriting otomatis
-
-3. **Cashier - Process Orders**
-   - View pending orders
-   - Check Empathy Radar untuk mood pelanggan
-   - Update status: preparing → completed
-   - Pilih payment method: Cash/QRIS/Debit
-
-## 🏆 Innovation Highlights
-
-1. **8-Category Mood Classification** - Bukan sekadar positive/neutral/negative, tapi spesifik ke 8 mood dengan emoji matching
-2. **Context-Aware Recommendation** - AI mempertimbangkan flavor profile menu dengan mood pelanggan
-3. **Empathy-Driven Service** - Staff bisa deliver service yang lebih personal dengan melihat mood summary
-4. **No-Password Customer Access** - Frictionless UX untuk pelanggan (sesuai rules hackathon)
-5. **AI Copywriting Integration** - Generate promo copy otomatis, bukan CRUD biasa
-
-## 🧪 Testing
+Di terminal terpisah, jalankan:
 
 ```bash
-# Run all tests
-php artisan test
-
-# Run specific test
-php artisan test --filter=OrderServiceTest
+npm run dev
 ```
 
-## 📁 Project Structure
+### 8.3 Cache Configuration (Opsional untuk Production)
+
+```bash
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+### 8.4 Clear Cache
+
+Jika ada perubahan di .env atau config:
+
+```bash
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+```
+
+---
+
+## 9. PANDUAN PENGGUNAAN
+
+### 9.1 Untuk Customer
+
+1. AKSES APLIKASI
+   - Buka browser dan akses http://127.0.0.1:8000
+   - Anda akan melihat landing page MoodBrew
+
+2. MELIHAT MENU (TANPA LOGIN)
+   - Klik menu "Menu" di navbar
+   - Lihat semua menu yang tersedia beserta harga dan deskripsi
+
+3. MELIHAT VIBE WALL (TANPA LOGIN)
+   - Klik menu "Vibe Wall" di navbar
+   - Lihat vibe/mood yang dibagikan pelanggan lain
+
+4. MULAI MEMESAN
+   - Klik tombol "Mulai Pesan" di landing page atau navbar
+   - Isi nama panggilan dan email
+   - Klik "Mulai Pesan dengan AI"
+
+5. CHAT DENGAN AI
+   - Setelah login, Anda akan masuk ke halaman AI Chat
+   - Ketik mood Anda, contoh: "Saya lagi ngantuk banget"
+   - AI akan memberikan rekomendasi minuman yang cocok
+   - Atau klik tombol Quick Mood untuk pilihan cepat
+
+6. MENAMBAH KE KERANJANG
+   - Dari rekomendasi AI, klik "Tambah ke Keranjang"
+   - Atau kunjungi halaman Menu untuk pilih manual
+   - Di halaman Menu, klik item untuk melihat detail
+   - Pilih quantity dan klik "Tambah ke Keranjang"
+
+7. CHECKOUT
+   - Klik icon keranjang di navbar
+   - Review pesanan Anda
+   - Isi nomor meja (opsional)
+   - Klik "Checkout"
+
+8. PEMBAYARAN
+   - Pesanan akan masuk ke sistem kasir
+   - Bayar di kasir saat pesanan siap (Cash/QRIS/Debit)
+
+9. BERBAGI VIBE
+   - Klik menu "Vibe Wall"
+   - Klik "Bagikan Vibe Kamu"
+   - Tulis perasaan/mood Anda
+   - Pilih emoji yang sesuai
+   - Pilih apakah ingin anonim atau tampilkan nama
+   - Klik "Kirim"
+   - Vibe akan muncul setelah diapprove admin
+
+### 9.2 Untuk Staff (Admin)
+
+1. LOGIN
+   - Akses http://127.0.0.1:8000/staff/login
+   - Login dengan email: admin@moodbrew.com, password: password
+
+2. DASHBOARD
+   - Lihat statistik: total order, revenue, customer, menu aktif
+   - Lihat chart penjualan
+   - Lihat order terbaru
+
+3. MENU MANAGEMENT
+   - Klik "Menu" di sidebar
+   - Untuk tambah menu: klik "Tambah Menu"
+   - Isi nama, kategori, harga, deskripsi, flavor profile
+   - Untuk edit: klik tombol edit pada item
+   - Untuk toggle availability: klik toggle pada item
+
+4. STAFF MANAGEMENT
+   - Klik "Staff" di sidebar
+   - Tambah kasir baru dengan klik "Tambah Staff"
+   - Edit atau hapus staff yang ada
+
+5. ORDER MANAGEMENT
+   - Klik "Orders" di sidebar
+   - Lihat semua pesanan dengan filter status
+   - Klik order untuk melihat detail
+
+6. VIBE WALL MODERATION
+   - Klik "Vibe Wall" di sidebar
+   - Tab "Pending" untuk review vibe baru
+   - Approve atau reject vibe
+   - Tab "Semua" untuk lihat semua vibe
+
+7. REPORTS
+   - Klik "Reports" di sidebar
+   - Pilih laporan harian atau bulanan
+   - Lihat statistik penjualan
+
+### 9.3 Untuk Staff (Cashier)
+
+1. LOGIN
+   - Akses http://127.0.0.1:8000/staff/login
+   - Login dengan email: cashier@moodbrew.com, password: password
+
+2. DASHBOARD
+   - Lihat order yang perlu diproses
+   - Lihat statistik harian
+
+3. ORDER PROCESSING
+   - Klik "Orders" di sidebar
+   - Tab "Pending" untuk order baru
+   - Tab "Preparing" untuk order yang sedang dibuat
+   - Tab "Completed" untuk order selesai
+   - Klik order untuk melihat detail dan update status
+
+4. PROCESS PAYMENT
+   - Di halaman Pending Orders, klik order
+   - Pilih metode pembayaran: Cash, QRIS, atau Debit
+   - Untuk Cash: masukkan jumlah uang yang diterima, sistem akan hitung kembalian
+   - Klik "Proses Pembayaran"
+
+5. EMPATHY RADAR
+   - Klik "Empathy Radar" di sidebar
+   - Lihat mood summary pelanggan yang sedang order
+   - Gunakan informasi ini untuk memberikan service yang lebih personal
+
+6. FLASH SALE
+   - Klik "Flash Sale" di sidebar
+   - Buat flash sale baru dengan klik "Buat Flash Sale"
+   - Pilih menu item
+   - Set persentase diskon
+   - Set waktu mulai dan berakhir
+   - Klik "Generate AI Copy" untuk buat copywriting otomatis
+   - Atau tulis copy manual
+   - Klik "Simpan"
+
+7. MENU MANAGEMENT
+   - Cashier juga bisa manage menu
+   - Klik "Menu" di sidebar
+   - Toggle availability untuk menu yang habis
+
+---
+
+## 10. STRUKTUR PROJECT
 
 ```
 moodbrew/
 ├── app/
-│   ├── Http/Controllers/   # Thin controllers
-│   ├── Services/          # Business logic
-│   ├── Models/            # Eloquent models
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/           # Controller untuk admin
+│   │   │   ├── Cashier/         # Controller untuk cashier
+│   │   │   ├── Customer/        # Controller untuk customer
+│   │   │   ├── AuthController.php
+│   │   │   └── LandingController.php
+│   │   ├── Middleware/
+│   │   │   └── RoleMiddleware.php
+│   │   └── Requests/            # Form request validation
+│   ├── Models/                  # Eloquent models
+│   ├── Services/                # Business logic layer
+│   │   ├── AI/                  # AI services
+│   │   │   ├── AiChatService.php
+│   │   │   ├── AiCopywritingService.php
+│   │   │   ├── AiRecommendationService.php
+│   │   │   └── AiSentimentService.php
+│   │   ├── AuthService.php
+│   │   ├── CartService.php
+│   │   ├── OrderService.php
+│   │   └── ...
+│   └── Providers/
+├── config/
+│   ├── app.php
+│   ├── services.php             # Konfigurasi AI ada di sini
 │   └── ...
-├── resources/
-│   ├── views/             # Blade templates
-│   │   ├── landing/
-│   │   ├── customer/
-│   │   ├── cashier/
-│   │   └── admin/
-│   └── css/
 ├── database/
 │   ├── migrations/
 │   └── seeders/
+├── resources/
+│   ├── views/
+│   │   ├── admin/              # Views untuk admin
+│   │   ├── cashier/            # Views untuk cashier
+│   │   ├── customer/           # Views untuk customer
+│   │   ├── landing/            # Views untuk landing page
+│   │   ├── auth/               # Views untuk login
+│   │   ├── components/         # Shared components
+│   │   └── layouts/            # Layout templates
+│   ├── css/
+│   └── js/
 ├── routes/
-│   └── web.php           # All routes (structured by role)
+│   └── web.php                 # Semua routes
+├── .env                        # Environment configuration
+├── .env.example                # Template environment
+├── composer.json
+├── package.json
 └── README.md
 ```
 
-## 🤝 Contributing
+---
 
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+## 11. AKUN DEFAULT
 
-## 📄 License
+Setelah menjalankan `php artisan migrate --seed`, akun berikut akan dibuat:
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### Admin
+- Email: admin@moodbrew.com
+- Password: password
+- Role: admin
 
-## 👥 Team
+### Cashier
+- Email: cashier@moodbrew.com
+- Password: password
+- Role: cashier
 
-- **[Your Name]** - Full Stack Developer
-- **Kolosal AI** - AI/ML Integration Partner
-
-## 🙏 Acknowledgments
-
-- Laravel Framework
-- Kolosal AI API
-- Tailwind CSS
-- Alpine.js
-- [Hackathon Name] Committee
+CATATAN: Ubah password default sebelum deploy ke production.
 
 ---
 
-**Built with ❤️ and ☕ for [Hackathon Name]**
+## 12. TROUBLESHOOTING
 
+### 12.1 Error: Class Not Found
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Solusi:
+```bash
+composer dump-autoload
+```
 
-## Security Vulnerabilities
+### 12.2 Error: Table Not Found
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Solusi:
+```bash
+php artisan migrate:fresh --seed
+```
 
-## License
+PERINGATAN: Ini akan menghapus semua data di database.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 12.3 Error: AI Tidak Merespons
+
+Cek:
+1. Pastikan `AI_API_KEY` sudah benar di .env
+2. Pastikan `AI_ENABLED=true`
+3. Cek koneksi internet
+4. Clear config cache: `php artisan config:clear`
+
+### 12.4 Error: Session Expired / Login Tidak Bisa
+
+Solusi:
+```bash
+php artisan session:table
+php artisan migrate
+php artisan config:clear
+```
+
+### 12.5 Error: Styles Tidak Muncul
+
+Solusi:
+```bash
+npm run build
+```
+
+### 12.6 Error: Environment File Invalid (Whitespace)
+
+Jika ada error seperti "Unexpected whitespace", pastikan value yang mengandung spasi dibungkus dengan tanda kutip:
+
+Salah:
+```env
+AI_MODEL=Claude Sonnet 4.5
+```
+
+Benar:
+```env
+AI_MODEL="Claude Sonnet 4.5"
+```
+
+### 12.7 Clear Semua Cache
+
+```bash
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
+```
+
+---
+
+## LICENSE
+
+This project is licensed under the MIT License.
+
+---
+
+## KONTRIBUTOR
+
+- TonAhmad - Full Stack Developer
+
+---
+
+Untuk pertanyaan atau bantuan, silakan buat Issue di repository ini.

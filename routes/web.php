@@ -168,17 +168,20 @@ Route::prefix('cashier')
 
 /*
 |--------------------------------------------------------------------------
-| Customer Routes
+| Customer Routes (Protected - Butuh Customer Session)
 |--------------------------------------------------------------------------
-| Routes untuk customer (bisa guest dengan session atau logged in)
+| Semua routes di bawah ini membutuhkan customer sudah login (isi nama & email)
+| Untuk melihat menu tanpa login, gunakan /menu (landing.menu)
 */
 
 Route::prefix('order')
     ->name('customer.')
+    ->middleware('customer.session')
     ->group(function () {
+        // Home page dengan AI Chat
         Route::get('/', [CustomerHomeController::class, 'index'])->name('home');
 
-        // Menu Browsing
+        // Menu Browsing (untuk customer yang sudah login)
         Route::prefix('menu')->name('menu.')->group(function () {
             Route::get('/', [CustomerMenuController::class, 'index'])->name('index');
             Route::get('/{slug}', [CustomerMenuController::class, 'show'])->name('show');
@@ -209,7 +212,7 @@ Route::prefix('order')
             Route::post('/', [CustomerVibeWallController::class, 'store'])->name('store');
         });
 
-        // AI Demo Page (untuk testing integrasi AI)
+        // AI Chat Demo
         Route::get('/ai-demo', function () {
             return view('customer.ai-demo');
         })->name('ai.demo');

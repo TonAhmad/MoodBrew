@@ -84,7 +84,10 @@ class AuthController extends Controller
                 ->withErrors(['email' => $result['message']]);
         }
 
-        return redirect()->route('customer.home')->with('success', $result['message']);
+        // Redirect ke intended URL jika ada, atau ke customer home
+        $intendedUrl = session()->pull('url.intended', route('customer.home'));
+        
+        return redirect($intendedUrl)->with('success', $result['message']);
     }
 
     /**
