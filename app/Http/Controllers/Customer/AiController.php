@@ -64,7 +64,8 @@ class AiController extends Controller
                     'name' => $item['name'],
                     'price' => $item['price'],
                     'description' => $item['description'] ?? '',
-                    'image_url' => $item['image_url'] ?? null,
+                    'category' => $item['category'] ?? 'coffee',
+                    'image_path' => $item['image_path'] ?? null,
                 ];
             })->toArray();
         }
@@ -110,6 +111,7 @@ class AiController extends Controller
                     'price' => $item['price'],
                     'description' => $item['description'] ?? '',
                     'category' => $item['category'] ?? 'coffee',
+                    'image_path' => $item['image_path'] ?? null,
                 ];
             })->toArray();
         }

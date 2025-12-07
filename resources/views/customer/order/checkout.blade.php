@@ -66,9 +66,14 @@
                         @foreach($cartItems as $item)
                             <div class="flex justify-between items-center pb-3 border-b border-gray-100 last:border-0">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-12 h-12 bg-brew-cream rounded-lg flex items-center justify-center">
-                                        <span class="text-xl">{{ $item['menu_item']->category === 'coffee' ? '☕' : '🥤' }}</span>
-                                    </div>
+                                    @if($item['menu_item']->image_path)
+                                        <img src="{{ asset('storage/' . $item['menu_item']->image_path) }}" alt="{{ $item['menu_item']->name }}"
+                                            class="w-12 h-12 rounded-lg object-cover">
+                                    @else
+                                        <div class="w-12 h-12 bg-brew-cream rounded-lg flex items-center justify-center">
+                                            <span class="text-xl">{{ $item['menu_item']->category === 'coffee' ? '☕' : '🥤' }}</span>
+                                        </div>
+                                    @endif
                                     <div>
                                         <p class="font-medium text-brew-dark">{{ $item['menu_item']->name }}</p>
                                         <p class="text-xs text-gray-500">{{ $item['quantity'] }}x @ Rp {{ number_format($item['price_at_moment'], 0, ',', '.') }}</p>
@@ -109,9 +114,14 @@
                     <div class="space-y-3 mb-6 max-h-[400px] overflow-y-auto pr-2">
                         @foreach($cartItems as $item)
                             <div class="flex items-start space-x-3 pb-3 border-b border-gray-100 last:border-0">
-                                <div class="w-14 h-14 bg-brew-cream rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <span class="text-2xl">{{ $item['menu_item']->category === 'coffee' ? '☕' : '🥤' }}</span>
-                                </div>
+                                @if($item['menu_item']->image_path)
+                                    <img src="{{ asset('storage/' . $item['menu_item']->image_path) }}" alt="{{ $item['menu_item']->name }}"
+                                        class="w-14 h-14 rounded-lg object-cover flex-shrink-0">
+                                @else
+                                    <div class="w-14 h-14 bg-brew-cream rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <span class="text-2xl">{{ $item['menu_item']->category === 'coffee' ? '☕' : '🥤' }}</span>
+                                    </div>
+                                @endif
                                 <div class="flex-1 min-w-0">
                                     <p class="font-medium text-brew-dark truncate">{{ $item['menu_item']->name }}</p>
                                     <p class="text-xs text-gray-500">{{ $item['quantity'] }}x @ Rp {{ number_format($item['price_at_moment'], 0, ',', '.') }}</p>

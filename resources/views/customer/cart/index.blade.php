@@ -34,9 +34,14 @@
                             @foreach($cartItems as $item)
                                 <div class="bg-white rounded-xl shadow-sm p-4 lg:p-5 hover:shadow-md transition-shadow" x-data="{ qty: {{ $item['quantity'] }} }">
                                     <div class="flex space-x-3 lg:space-x-4">
-                                        <div class="w-20 h-20 lg:w-24 lg:h-24 bg-brew-cream rounded-lg flex items-center justify-center flex-shrink-0">
-                                            <span class="text-3xl lg:text-4xl">{{ $item['menu_item']->category === 'coffee' ? '☕' : '🥤' }}</span>
-                                        </div>
+                                        @if($item['menu_item']->image_path)
+                                            <img src="{{ asset('storage/' . $item['menu_item']->image_path) }}" alt="{{ $item['menu_item']->name }}"
+                                                class="w-20 h-20 lg:w-24 lg:h-24 rounded-lg object-cover flex-shrink-0">
+                                        @else
+                                            <div class="w-20 h-20 lg:w-24 lg:h-24 bg-brew-cream rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <span class="text-3xl lg:text-4xl">{{ $item['menu_item']->category === 'coffee' ? '☕' : '🥤' }}</span>
+                                            </div>
+                                        @endif
                                         <div class="flex-1">
                                             <div class="flex justify-between items-start">
                                                 <div>

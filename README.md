@@ -95,7 +95,9 @@ MoodBrew adalah aplikasi cafe management yang mengintegrasikan AI untuk:
 - Blade Templates (server-side rendering)
 
 ### AI Integration
-- Kolosal AI API (OpenAI-compatible format)
+- **Kolosal AI** dengan model **Qwen 3 30BA3B**
+- OpenAI-compatible API format
+- Optimized untuk bahasa Indonesia
 
 ---
 
@@ -210,17 +212,20 @@ SESSION_LIFETIME=120
 AI_PROVIDER=kolosal
 AI_API_KEY=your-kolosal-api-key-here
 AI_API_URL=https://api.kolosal.ai/v1
-AI_MODEL="Claude Sonnet 4.5"
+AI_MODEL="Qwen 3 30BA3B"
 AI_TEMPERATURE=0.7
 AI_MAX_TOKENS=1000
 AI_ENABLED=true
 AI_FALLBACK_ENABLED=true
 ```
 
+⚡ **MODEL AI YANG DIGUNAKAN: Qwen 3 30BA3B** ⚡
+
 PENTING:
 - `AI_API_KEY`: Dapatkan dari https://kolosal.ai setelah registrasi
-- `AI_MODEL`: Gunakan tanda kutip jika nama model mengandung spasi
+- `AI_MODEL`: **Kami menggunakan "Qwen 3 30BA3B" dari Kolosal AI** untuk performa optimal dalam bahasa Indonesia
 - `AI_ENABLED`: Set `true` untuk mengaktifkan fitur AI, `false` untuk menonaktifkan
+- Gunakan tanda kutip jika nama model mengandung spasi
 
 ### 6.5 Contoh .env Lengkap
 
@@ -275,7 +280,7 @@ MAIL_FROM_NAME="${APP_NAME}"
 AI_PROVIDER=kolosal
 AI_API_KEY=your-kolosal-api-key-here
 AI_API_URL=https://api.kolosal.ai/v1
-AI_MODEL="Claude Sonnet 4.5"
+AI_MODEL="Qwen 3 30BA3B"
 AI_TEMPERATURE=0.7
 AI_MAX_TOKENS=1000
 AI_ENABLED=true
@@ -306,13 +311,14 @@ AI_API_KEY=kol_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ### 7.3 Memilih Model AI
 
-Kolosal AI menyediakan beberapa model. Untuk menggunakan model tertentu, ubah nilai `AI_MODEL`:
+Kolosal AI menyediakan beberapa model. **MoodBrew menggunakan Qwen 3 30BA3B** untuk hasil terbaik dalam bahasa Indonesia:
 
 ```env
-AI_MODEL="Claude Sonnet 4.5"
+AI_MODEL="Qwen 3 30BA3B"
 ```
 
-Model lain yang tersedia:
+Model lain yang tersedia di Kolosal AI:
+- Claude Sonnet 4.5
 - meta-llama/llama-4-maverick-17b-128e-instruct
 - Dan model lain yang tersedia di Kolosal AI
 
@@ -564,17 +570,54 @@ moodbrew/
 
 Setelah menjalankan `php artisan migrate --seed`, akun berikut akan dibuat:
 
-### Admin
-- Email: admin@moodbrew.com
-- Password: password
-- Role: admin
+### 🔐 AKUN UNTUK JURI HACKATHON
 
-### Cashier
-- Email: cashier@moodbrew.com
-- Password: password
-- Role: cashier
+#### 👨‍💼 Admin
+- **Email**: `admin@moodbrew.id`
+- **Password**: `admin123`
+- **Role**: Admin
+- **URL Login**: http://127.0.0.1:8000/staff/login
 
-CATATAN: Ubah password default sebelum deploy ke production.
+#### 💰 Cashier
+- **Email**: `kasir1@moodbrew.id`
+- **Password**: `kasir123`
+- **Role**: Cashier
+- **URL Login**: http://127.0.0.1:8000/staff/login
+
+Atau gunakan kasir kedua:
+- **Email**: `kasir2@moodbrew.id`
+- **Password**: `kasir123`
+
+#### 👤 Customer (Opsional - untuk testing)
+**Customer 1:**
+- **Email**: `budi@email.com`
+- **Password**: `customer123`
+- **URL Login**: http://127.0.0.1:8000/customer/login
+
+**Customer 2:**
+- **Email**: `sari@email.com`
+- **Password**: `customer123`
+
+---
+
+### ⚠️ CATATAN PENTING UNTUK JURI
+
+1. **Untuk Pengalaman Customer Terbaik**: 
+   - Kami sarankan menggunakan fitur **Quick Access Login** (tanpa password)
+   - Cukup masukkan nama dan email di landing page
+   - Langsung chat dengan AI dan dapatkan rekomendasi minuman
+
+2. **Login Staff**:
+   - Admin dan Cashier harus login dengan email dan password
+   - Akses URL: http://127.0.0.1:8000/staff/login
+
+3. **Model AI**: 
+   - Aplikasi menggunakan **Qwen 3 30BA3B** dari Kolosal AI
+   - Pastikan `AI_ENABLED=true` di file `.env`
+
+4. **Password Default**:
+   - Ubah password default sebelum deploy ke production
+   - Ini hanya untuk keperluan demo dan testing
 
 ---
 

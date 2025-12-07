@@ -51,9 +51,14 @@
                     <div class="flex space-x-3 overflow-x-auto pb-2">
                         @foreach($flashSales as $sale)
                             <div class="flex-shrink-0 w-40 bg-white rounded-xl shadow-sm p-3 border-2 border-red-200">
-                                <div class="w-full h-20 bg-red-50 rounded-lg mb-2 flex items-center justify-center">
-                                    <span class="text-3xl">☕</span>
-                                </div>
+                                @if($sale->menuItem->image_path)
+                                    <img src="{{ asset('storage/' . $sale->menuItem->image_path) }}" alt="{{ $sale->menuItem->name }}"
+                                        class="w-full h-20 rounded-lg object-cover mb-2">
+                                @else
+                                    <div class="w-full h-20 bg-red-50 rounded-lg mb-2 flex items-center justify-center">
+                                        <span class="text-3xl">☕</span>
+                                    </div>
+                                @endif
                                 <p class="font-semibold text-brew-dark text-sm truncate">{{ $sale->menuItem->name }}</p>
                                 <p class="text-gray-400 text-xs line-through">Rp {{ number_format($sale->menuItem->price, 0, ',', '.') }}</p>
                                 <p class="text-red-500 font-bold">Rp {{ number_format($sale->discounted_price, 0, ',', '.') }}</p>
@@ -73,9 +78,14 @@
                     <div class="grid grid-cols-2 gap-3">
                         @foreach($popularItems as $item)
                             <a href="{{ route('customer.menu.show', $item->slug) }}" class="bg-white rounded-xl shadow-sm p-3 block">
-                                <div class="w-full h-20 bg-brew-cream rounded-lg mb-2 flex items-center justify-center">
-                                    <span class="text-3xl">{{ $item->category === 'coffee' ? '☕' : '🥤' }}</span>
-                                </div>
+                                @if($item->image_path)
+                                    <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}"
+                                        class="w-full h-20 rounded-lg object-cover mb-2">
+                                @else
+                                    <div class="w-full h-20 bg-brew-cream rounded-lg mb-2 flex items-center justify-center">
+                                        <span class="text-3xl">{{ $item->category === 'coffee' ? '☕' : '🥤' }}</span>
+                                    </div>
+                                @endif
                                 <p class="font-semibold text-brew-dark text-sm truncate">{{ $item->name }}</p>
                                 <p class="text-brew-gold font-bold">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
                             </a>
@@ -231,8 +241,12 @@
                                 <template x-for="item in recommendations" :key="item.id">
                                     <div class="bg-gradient-to-br from-brew-cream to-brew-light rounded-xl p-4 hover:shadow-md transition-shadow">
                                         <div class="flex items-center space-x-3 mb-3">
-                                            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-                                                <span class="text-2xl" x-text="item.category === 'coffee' ? '☕' : '🥤'">☕</span>
+                                            <div x-show="item.image_path" class="w-12 h-12 rounded-lg flex-shrink-0">
+                                                <img :src="'{{ asset('storage') }}/' + item.image_path" :alt="item.name"
+                                                    class="w-full h-full rounded-lg object-cover">
+                                            </div>
+                                            <div x-show="!item.image_path" class="w-12 h-12 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <span class="text-2xl" x-text="item.category === 'coffee' ? '☕' : '🥤'"></span>
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <p class="font-semibold text-brew-dark text-sm truncate" x-text="item.name"></p>
@@ -257,8 +271,12 @@
                     <div class="grid grid-cols-2 gap-3">
                         <template x-for="item in recommendations" :key="item.id">
                             <div class="bg-white rounded-xl shadow-sm p-3">
-                                <div class="w-full h-20 bg-brew-cream rounded-lg mb-2 flex items-center justify-center">
-                                    <span class="text-3xl" x-text="item.category === 'coffee' ? '☕' : '🥤'">☕</span>
+                                <div x-show="item.image_path" class="w-full h-20 rounded-lg mb-2">
+                                    <img :src="'{{ asset('storage') }}/' + item.image_path" :alt="item.name"
+                                        class="w-full h-full rounded-lg object-cover">
+                                </div>
+                                <div x-show="!item.image_path" class="w-full h-20 bg-brew-cream rounded-lg mb-2 flex items-center justify-center">
+                                    <span class="text-3xl" x-text="item.category === 'coffee' ? '☕' : '🥤'"></span>
                                 </div>
                                 <p class="font-semibold text-brew-dark text-sm truncate" x-text="item.name"></p>
                                 <p class="text-brew-gold font-bold text-xs" x-text="'Rp ' + item.price.toLocaleString('id-ID')"></p>
@@ -333,6 +351,7 @@ function aiChat() {
                     // Extract menu suggestions if any
                     if (data.suggested_menus && data.suggested_menus.length > 0) {
                         this.recommendations = data.suggested_menus;
+                        console.log('Recommendations received:', this.recommendations);
                     }
                 } else {
                     this.messages.push({

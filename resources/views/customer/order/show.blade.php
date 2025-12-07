@@ -97,9 +97,14 @@
                 <div class="space-y-3">
                     @foreach($order->orderItems as $item)
                         <div class="flex items-center space-x-3 pb-3 border-b border-gray-100 last:border-0 last:pb-0">
-                            <div class="w-12 h-12 bg-brew-cream rounded-lg flex items-center justify-center">
-                                <span class="text-xl">{{ $item->menuItem->category === 'coffee' ? '☕' : '🥤' }}</span>
-                            </div>
+                            @if($item->menuItem->image_path)
+                                <img src="{{ asset('storage/' . $item->menuItem->image_path) }}" alt="{{ $item->menuItem->name }}"
+                                    class="w-12 h-12 rounded-lg object-cover">
+                            @else
+                                <div class="w-12 h-12 bg-brew-cream rounded-lg flex items-center justify-center">
+                                    <span class="text-xl">{{ $item->menuItem->category === 'coffee' ? '☕' : '🥤' }}</span>
+                                </div>
+                            @endif
                             <div class="flex-1">
                                 <p class="font-medium text-brew-dark">{{ $item->menuItem->name }}</p>
                                 <p class="text-xs text-gray-500">{{ $item->quantity }}x @ Rp {{ number_format($item->price_at_moment, 0, ',', '.') }}</p>
