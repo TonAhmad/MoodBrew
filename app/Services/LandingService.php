@@ -81,7 +81,7 @@ class LandingService
     {
         return [
             'tagline' => 'AI-Powered Coffee Experience',
-            'headline' => 'Coffee yang Memahami Perasaanmu',
+            'headline' => 'Kafe yang memahami perasaanmu',
             'subheadline' => 'Ceritakan mood-mu hari ini, dan AI kami akan merekomendasikan minuman yang sempurna untukmu.',
         ];
     }

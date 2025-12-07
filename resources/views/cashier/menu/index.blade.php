@@ -105,31 +105,40 @@
                 @foreach ($menuItems as $item)
                     <div
                         class="bg-white rounded-xl shadow-sm overflow-hidden group hover:shadow-md transition-shadow {{ !$item->is_available ? 'opacity-60' : '' }}">
-                        {{-- Menu Image Placeholder --}}
-                        <div
-                            class="h-32 bg-gradient-to-br from-brew-cream to-brew-light flex items-center justify-center relative">
-                            <span class="text-4xl">
-                                @switch($item->category)
-                                    @case('coffee')
-                                        ☕
-                                    @break
+                        {{-- Menu Image --}}
+<div
+    class="h-32 bg-gradient-to-br from-brew-cream to-brew-light flex items-center justify-center relative overflow-hidden">
+    @if ($item->image_path)
+        <img
+            src="{{ asset('storage/' . $item->image_path) }}"
+            alt="{{ $item->name }}"
+            class="w-full h-full object-cover"
+        >
+    @else
+        <span class="text-4xl">
+            @switch($item->category)
+                @case('coffee')
+                    ☕
+                @break
 
-                                    @case('non-coffee')
-                                        🧋
-                                    @break
+                @case('non-coffee')
+                    🧋
+                @break
 
-                                    @case('pastry')
-                                        🥐
-                                    @break
+                @case('pastry')
+                    🥐
+                @break
 
-                                    @case('main_course')
-                                        🍽️
-                                    @break
+                @case('main_course')
+                    🍽️
+                @break
 
-                                    @default
-                                        🍴
-                                @endswitch
-                            </span>
+                @default
+                    🍴
+            @endswitch
+        </span>
+    @endif
+
 
                             {{-- Category Badge --}}
                             <span
