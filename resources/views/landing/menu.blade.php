@@ -6,7 +6,7 @@
     {{-- Hero Section --}}
     <section class="bg-gradient-to-br from-brew-brown to-brew-dark text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
+            <div class="text-center fade-in">
                 <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">
                     ☕ Menu Kami
                 </h1>
@@ -19,7 +19,7 @@
 
     {{-- Flash Sale Banner --}}
     @if($flashSale)
-    <section class="bg-gradient-to-r from-brew-gold to-yellow-500 py-4">
+    <section class="bg-gradient-to-r from-brew-gold to-yellow-500 py-4 scale-in">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-center gap-3 text-brew-dark">
                 <span class="text-2xl">⚡</span>
@@ -39,12 +39,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             @foreach($menuByCategory as $category => $items)
                 <div class="mb-12">
-                    <h2 class="font-display text-2xl md:text-3xl font-bold text-brew-dark mb-6 capitalize">
+                    <h2 class="font-display text-2xl md:text-3xl font-bold text-brew-dark mb-6 capitalize fade-in">
                         {{ str_replace('_', ' ', $category) }}
                     </h2>
                     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($items as $item)
-                            <div class="bg-brew-light rounded-2xl p-6 hover:shadow-xl transition-all border border-transparent hover:border-brew-gold/20">
+                            <div class="bg-brew-light rounded-2xl p-6 hover:shadow-xl transition-all border border-transparent hover:border-brew-gold/20 scale-in transform hover:scale-105">
                                 <div class="flex justify-between items-start mb-3">
                                     <h3 class="font-bold text-lg text-brew-dark">{{ $item->name }}</h3>
                                     @if($flashSale)

@@ -80,8 +80,8 @@ class LandingService
     public function getHeroData(): array
     {
         return [
-            'tagline' => 'AI-Powered Coffee Experience',
-            'headline' => 'Coffee yang Memahami Perasaanmu',
+            'tagline' => 'AI-Powered Cafe Experience',
+            'headline' => 'Cafe yang Memahami Perasaanmu',
             'subheadline' => 'Ceritakan mood-mu hari ini, dan AI kami akan merekomendasikan minuman yang sempurna untukmu.',
         ];
     }

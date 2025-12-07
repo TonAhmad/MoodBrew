@@ -9,13 +9,11 @@
             {{-- Brand Section --}}
             <div class="md:col-span-2">
                 <div class="flex items-center space-x-2 mb-4">
-                    <div class="w-10 h-10 bg-brew-gold rounded-full flex items-center justify-center">
-                        <span class="text-brew-dark font-display font-bold text-lg">M</span>
-                    </div>
+                    <img src="{{ asset('assets/moodbrew.png') }}" alt="MoodBrew Logo" class="w-10 h-10 rounded-full object-cover">
                     <span class="font-display text-2xl font-bold">MoodBrew</span>
                 </div>
                 <p class="text-brew-cream/80 mb-4 max-w-md">
-                    Coffee yang memahami perasaanmu. Dengan teknologi AI, kami merekomendasikan minuman yang sempurna
+                    Cafe yang memahami perasaanmu. Dengan teknologi AI, kami merekomendasikan minuman yang sempurna
                     untuk mood kamu hari ini.
                 </p>
                 <div class="flex space-x-4">
@@ -78,7 +76,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                        <span class="text-brew-cream/70">Jl. Coffee Lovers No. 42<br>Jakarta Selatan</span>
+                        <span class="text-brew-cream/70">Jl. Cafe Mood No. 42<br>Jakarta Selatan</span>
                     </li>
                     <li class="flex items-center space-x-3">
                         <svg class="w-5 h-5 text-brew-gold flex-shrink-0" fill="none" stroke="currentColor"

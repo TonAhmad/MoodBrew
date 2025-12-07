@@ -1,4 +1,4 @@
-# MoodBrew - Coffee That Understands You
+# MoodBrew - Cafe That Understands You
 
 MoodBrew adalah sistem manajemen cafe berbasis AI yang memberikan pengalaman personal kepada pelanggan melalui deteksi mood dan rekomendasi minuman yang tepat.
 

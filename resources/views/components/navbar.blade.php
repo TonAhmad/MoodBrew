@@ -2,15 +2,22 @@
     Navbar Component - MoodBrew Landing Page
     Responsive navigation with mobile menu support
 --}}
-<nav x-data="{ mobileMenuOpen: false }" class="bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+<nav x-data="{ mobileMenuOpen: false }" class="bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-50 transition-all duration-300"
+     x-init="
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                $el.classList.add('shadow-lg');
+            } else {
+                $el.classList.remove('shadow-lg');
+            }
+        })
+     ">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
             {{-- Logo --}}
             <div class="flex items-center">
-                <a href="{{ route('landing.home') }}" class="flex items-center space-x-2">
-                    <div class="w-10 h-10 bg-brew-brown rounded-full flex items-center justify-center">
-                        <span class="text-brew-cream font-display font-bold text-lg">M</span>
-                    </div>
+                <a href="{{ route('landing.home') }}" class="flex items-center space-x-2 group">
+                    <img src="{{ asset('assets/moodbrew.png') }}" alt="MoodBrew Logo" class="w-10 h-10 rounded-full object-cover transition-transform duration-300 group-hover:scale-110">
                     <span class="font-display text-xl font-bold text-brew-dark">MoodBrew</span>
                 </a>
             </div>

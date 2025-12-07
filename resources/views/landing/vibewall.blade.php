@@ -3,10 +3,10 @@
 @section('title', 'Vibe Wall - MoodBrew')
 
 @section('content')
-    {{-- Hero Section --}}
+{{-- Hero Section --}}
     <section class="bg-gradient-to-br from-purple-600 to-pink-600 text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
+            <div class="text-center fade-in">
                 <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">
                     💭 Vibe Wall
                 </h1>
@@ -21,15 +21,15 @@
     <section class="py-8 bg-white border-b border-gray-100">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-3 gap-4 text-center">
-                <div>
+                <div class="scale-in delay-100">
                     <p class="text-3xl font-bold text-brew-gold">{{ $stats['total'] }}</p>
                     <p class="text-sm text-gray-600">Total Vibes</p>
                 </div>
-                <div>
+                <div class="scale-in delay-200">
                     <p class="text-3xl font-bold text-green-600">{{ $stats['today'] }}</p>
                     <p class="text-sm text-gray-600">Hari Ini</p>
                 </div>
-                <div>
+                <div class="scale-in delay-300">
                     <p class="text-3xl font-bold text-purple-600">{{ $stats['featured'] }}</p>
                     <p class="text-sm text-gray-600">Featured</p>
                 </div>
@@ -43,7 +43,7 @@
             @if($vibes->count() > 0)
                 <div class="grid md:grid-cols-2 gap-6">
                     @foreach($vibes as $vibe)
-                        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all {{ $vibe->is_featured ? 'ring-2 ring-purple-400' : '' }}">
+                        <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all transform hover:scale-105 fade-in {{ $vibe->is_featured ? 'ring-2 ring-purple-400' : '' }}">
                             {{-- Header --}}
                             <div class="flex items-start justify-between mb-4">
                                 <div class="flex items-center gap-3">

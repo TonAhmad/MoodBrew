@@ -52,7 +52,7 @@ class KolosalAIService
             $messages = [
                 [
                     'role' => 'system',
-                    'content' => 'Kamu adalah AI assistant untuk MoodBrew, sebuah aplikasi coffee shop yang merekomendasikan kopi berdasarkan mood customer.'
+                    'content' => 'Kamu adalah AI assistant untuk MoodBrew, sebuah aplikasi cafe yang merekomendasikan minuman berdasarkan mood customer.'
                 ],
                 [
                     'role' => 'user',

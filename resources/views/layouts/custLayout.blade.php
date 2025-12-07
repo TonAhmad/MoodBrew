@@ -8,6 +8,10 @@
 
     <title>@yield('title', 'MoodBrew') - Pesan dengan AI</title>
 
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" href="{{ asset('assets/moodbrew.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/moodbrew.png') }}">
+
     {{-- Tailwind CSS via CDN --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -58,6 +62,15 @@
                 @if(session('customer_name'))
                     <span class="text-sm text-gray-600">👋 {{ session('customer_name') }}</span>
                 @endif
+                {{-- Logout Button Mobile --}}
+                <form action="{{ route('logout') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Logout">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                    </button>
+                </form>
             </div>
         </div>
     </header>
@@ -142,6 +155,17 @@
                             <span id="cartBadgeDesktop" data-cart-badge class="ml-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
                         @endif
                     </a>
+
+                    {{-- Logout Button Desktop --}}
+                    <form action="{{ route('logout') }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="flex items-center space-x-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Logout">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            <span class="text-sm font-medium">Logout</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

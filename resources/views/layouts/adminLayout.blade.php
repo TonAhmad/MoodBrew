@@ -8,6 +8,10 @@
 
     <title>@yield('title', 'Dashboard') - MoodBrew Admin</title>
 
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" href="{{ asset('assets/moodbrew.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/moodbrew.png') }}">
+
     {{-- Tailwind CSS via CDN --}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script>

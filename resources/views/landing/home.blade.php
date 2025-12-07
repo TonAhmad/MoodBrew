@@ -1,6 +1,6 @@
 @extends('layouts.landingLayout')
 
-@section('title', 'MoodBrew - Coffee That Understands You')
+@section('title', 'MoodBrew - Cafe That Understands You')
 
 @section('content')
     {{-- Hero Section --}}
@@ -15,13 +15,13 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 {{-- Hero Content --}}
-                <div class="text-center lg:text-left">
+                <div class="text-center lg:text-left fade-in-left">
                     <span
                         class="inline-block px-4 py-1 bg-brew-gold/20 text-brew-gold rounded-full text-sm font-medium mb-6">
-                        ✨ AI-Powered Coffee Experience
+                        ✨ AI-Powered Cafe Experience
                     </span>
                     <h1 class="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                        Coffee yang
+                        Cafe yang
                         <span class="text-gradient">Memahami</span>
                         Perasaanmu
                     </h1>
@@ -46,14 +46,14 @@
                 </div>
 
                 {{-- Hero Visual --}}
-                <div class="hidden lg:flex justify-center">
+                <div class="hidden lg:flex justify-center fade-in-right">
                     <div class="relative">
-                        {{-- Coffee Cup Illustration --}}
+                        {{-- Cafe Cup Illustration --}}
                         <div
-                            class="w-80 h-80 bg-brew-cream/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+                            class="w-80 h-80 bg-brew-cream/10 rounded-full flex items-center justify-center backdrop-blur-sm animate-float">
                             <div class="text-center">
-                                <div class="text-8xl mb-4">☕</div>
-                                <p class="text-brew-cream font-display text-xl">Your Mood,<br>Your Brew</p>
+                                <img src="{{ asset('assets/moodbrew.png') }}" alt="MoodBrew Logo" class="w-32 h-32 rounded-full mx-auto mb-4 shadow-2xl">
+                                <p class="text-brew-cream font-display text-xl">Your Mood,<br>Your Cafe</p>
                             </div>
                         </div>
                         {{-- Floating Elements --}}
@@ -62,7 +62,7 @@
                             AI Powered
                         </div>
                         <div
-                            class="absolute -bottom-4 -left-4 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm">
+                            class="absolute -bottom-4 -left-4 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm animate-pulse">
                             💬 "Feeling stressed..."
                         </div>
                     </div>
@@ -75,13 +75,13 @@
     <section id="features" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {{-- Section Header --}}
-            <div class="text-center mb-16">
+            <div class="text-center mb-16 fade-in">
                 <span class="text-brew-gold font-medium">Fitur Unggulan</span>
                 <h2 class="font-display text-3xl md:text-4xl font-bold text-brew-dark mt-2 mb-4">
                     Pengalaman Ngopi yang Berbeda
                 </h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">
-                    MoodBrew menggabungkan teknologi AI dengan kehangatan cafe untuk memberikan pengalaman yang personal dan
+                    MoodBrew menggabungkan teknologi AI dengan kehangatan cafe untuk memberikan pengalaman ngopi yang personal dan
                     memorable.
                 </p>
             </div>
@@ -90,7 +90,7 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {{-- Feature 1: AI Mood Recommendation --}}
                 <div
-                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20">
+                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20 scale-in delay-100">
                     <div
                         class="w-14 h-14 bg-brew-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brew-gold/20 transition-colors">
                         <span class="text-3xl">🧠</span>
@@ -106,7 +106,7 @@
 
                 {{-- Feature 2: QR Table Ordering --}}
                 <div
-                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20">
+                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20 scale-in delay-200">
                     <div
                         class="w-14 h-14 bg-brew-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brew-gold/20 transition-colors">
                         <span class="text-3xl">📱</span>
@@ -122,7 +122,7 @@
 
                 {{-- Feature 3: Flash Sales --}}
                 <a href="{{ route('landing.menu') }}"
-                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20">
+                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20 scale-in delay-300">
                     <div
                         class="w-14 h-14 bg-brew-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brew-gold/20 transition-colors">
                         <span class="text-3xl">⚡</span>
@@ -138,7 +138,7 @@
 
                 {{-- Feature 4: Silent Social Wall --}}
                 <a href="{{ route('landing.vibewall') }}"
-                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20">
+                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20 scale-in delay-400">
                     <div
                         class="w-14 h-14 bg-brew-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brew-gold/20 transition-colors">
                         <span class="text-3xl">💭</span>
@@ -154,7 +154,7 @@
 
                 {{-- Feature 5: Empathy Radar --}}
                 <div
-                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20">
+                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20 scale-in delay-500">
                     <div
                         class="w-14 h-14 bg-brew-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brew-gold/20 transition-colors">
                         <span class="text-3xl">💝</span>
@@ -170,7 +170,7 @@
 
                 {{-- Feature 6: No Online Payment --}}
                 <div
-                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20">
+                    class="group p-8 bg-brew-light rounded-2xl hover:shadow-xl transition-all duration-300 border border-transparent hover:border-brew-gold/20 scale-in delay-600">
                     <div
                         class="w-14 h-14 bg-brew-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-brew-gold/20 transition-colors">
                         <span class="text-3xl">💵</span>
@@ -191,7 +191,7 @@
     <section class="py-20 bg-brew-cream/50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {{-- Section Header --}}
-            <div class="text-center mb-16">
+            <div class="text-center mb-16 fade-in">
                 <span class="text-brew-gold font-medium">Cara Kerja</span>
                 <h2 class="font-display text-3xl md:text-4xl font-bold text-brew-dark mt-2 mb-4">
                     Semudah 1, 2, 3
@@ -201,7 +201,7 @@
             {{-- Steps --}}
             <div class="grid md:grid-cols-3 gap-8">
                 {{-- Step 1 --}}
-                <div class="text-center">
+                <div class="text-center fade-in delay-100">
                     <div
                         class="w-16 h-16 bg-brew-brown text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6">
                         1
@@ -215,7 +215,7 @@
                 </div>
 
                 {{-- Step 2 --}}
-                <div class="text-center">
+                <div class="text-center fade-in delay-300">
                     <div
                         class="w-16 h-16 bg-brew-brown text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6">
                         2
@@ -229,7 +229,7 @@
                 </div>
 
                 {{-- Step 3 --}}
-                <div class="text-center">
+                <div class="text-center fade-in delay-500">
                     <div
                         class="w-16 h-16 bg-brew-brown text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6">
                         3
@@ -247,7 +247,7 @@
 
     {{-- CTA Section --}}
     <section class="py-20 gradient-brew">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center fade-in">
             <h2 class="font-display text-3xl md:text-4xl font-bold text-white mb-6">
                 Siap Mencoba Pengalaman Baru?
             </h2>
