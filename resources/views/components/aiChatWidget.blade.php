@@ -139,6 +139,9 @@
                         <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                             style="animation-delay: 300ms"></span>
                     </div>
+                     <span class="text-xs text-gray-500">
+                Brew lagi mikirkan rekomendasi buatmu sebentar ya…
+            </span>
                 </div>
             </div>
         </div>

@@ -75,12 +75,18 @@
                              @click="addItem({{ $item->id }}, '{{ $item->name }}', {{ $item->price }})"
                              class="p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-brew-gold hover:bg-brew-cream/30 transition-all">
                             <div class="w-full h-20 bg-gray-100 rounded-lg mb-2 flex items-center justify-center overflow-hidden">
-                                @if($item->image_url)
-                                <img src="{{ asset('storage/' . $item->image_url) }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
-                                @else
-                                <span class="text-2xl">☕</span>
-                                @endif
-                            </div>
+                              @if($item->image_path)
+                    <img src="{{ asset('storage/' . $item->image_path) }}" 
+                         alt="{{ $item->name }}" 
+                         class="w-full h-full object-cover">
+                @else
+                    <span class="text-2xl">
+                        {{ $item->category === 'coffee'
+                            ? '☕'
+                            : ($item->category === 'pastry' ? '🥐' : '🥤') }}
+                    </span>
+                @endif
+            </div>
                             <p class="font-medium text-sm text-brew-dark truncate">{{ $item->name }}</p>
                             <p class="text-sm text-brew-gold font-bold">Rp {{ number_format($item->price, 0, ',', '.') }}</p>
                         </div>
